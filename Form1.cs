@@ -46,8 +46,8 @@ namespace CHN_Tool
             exp["C"] = Convert.ToDouble(CValue.Text);
             exp["H"] = Convert.ToDouble(HValue.Text);
             exp["N"] = Convert.ToDouble(NValue.Text);
-            exp["F"] = Convert.ToDouble(SValue.Text);
-            exp["S"] = Convert.ToDouble(FValue.Text);
+            exp["F"] = Convert.ToDouble(FValue.Text);
+            exp["S"] = Convert.ToDouble(SValue.Text);
 
             deltaLbl.Text = "Deltas:\n";
             foreach (string element in new string[] { "C", "H", "N", "S", "F" })
