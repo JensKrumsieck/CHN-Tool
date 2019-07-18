@@ -75,8 +75,8 @@ namespace CHN_Tool
             exp["C"] = Convert.ToDouble(CValue.Text);
             exp["H"] = Convert.ToDouble(HValue.Text);
             exp["N"] = Convert.ToDouble(NValue.Text);
-            exp["F"] = Convert.ToDouble(SValue.Text);
-            exp["S"] = Convert.ToDouble(FValue.Text);
+            exp["F"] = Convert.ToDouble(FValue.Text);
+            exp["S"] = Convert.ToDouble(SValue.Text);
 
             //so get dimensions...
             outputRTB.Text += "Building Matrix with Dimension ";
