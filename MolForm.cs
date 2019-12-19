@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using MathNet.Numerics;
+using MathNet.Numerics.Optimization;
 
 namespace CHN_Tool
 {
@@ -99,13 +101,13 @@ namespace CHN_Tool
             ["Pa"] = 231.04,
             ["U"] = 238.03
         };
-        
+
         /// <summary>
         /// Parses the given string into a dictionary
         /// </summary>
         /// <param name="formula"></param>
         /// <returns></returns>
-        public static Dictionary<string, double> ExtractElements (string formula)
+        public static Dictionary<string, double> ExtractElements(string formula)
         {
             List<Dictionary<string, double>> result = new List<Dictionary<string, double>>();
             result.Add(new Dictionary<string, double>());
@@ -154,11 +156,11 @@ namespace CHN_Tool
         /// <param name="dict"></param>
         /// <param name="mult">The factor</param>
         /// <returns></returns>
-        internal static Dictionary<string, double> Factor (this Dictionary<string, double> dict, double mult)
+        internal static Dictionary<string, double> Factor(this Dictionary<string, double> dict, double mult)
         {
             for (int j = 0; j < dict.Count; j++)
             {
-               dict[dict.ElementAt(j).Key] = dict.ElementAt(j).Value * mult;
+                dict[dict.ElementAt(j).Key] = dict.ElementAt(j).Value * mult;
             }
             return dict;
         }
@@ -172,7 +174,7 @@ namespace CHN_Tool
         {
             var dic = ExtractElements(formula);
             StringBuilder sb = new StringBuilder();
-            foreach(var item in dic)
+            foreach (var item in dic)
             {
                 sb.Append(item.Key + item.Value);
             }
@@ -185,7 +187,7 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="Elements"></param>
         /// <returns></returns>
-        public static double MolWeight (Dictionary<string, double> Elements)
+        public static double MolWeight(Dictionary<string, double> Elements)
         {
             double MW = 0;
             foreach (var element in Elements)
@@ -201,7 +203,7 @@ namespace CHN_Tool
         /// <param name="el"></param>
         /// <param name="no"></param>
         /// <returns></returns>
-        public static double Weight(string el, double no)
+        internal static double Weight(string el, double no)
         {
             return weights[el] * no;
         }
@@ -220,6 +222,25 @@ namespace CHN_Tool
                 CHNElements.Add(element.Key, Weight(element.Key, element.Value));
             }
             return CHNElements;
+        }
+
+        /// <summary>
+        /// calculates error between two analysis
+        /// </summary>
+        /// <param name="theo"></param>
+        /// <param name="exp"></param>
+        /// <returns></returns>
+        internal static double Error(Dictionary <string, double> theo, Dictionary<string, double> exp)
+        {
+            double err = 0;
+            foreach(var item in theo)
+            {
+                if (exp.ContainsKey(item.Key))
+                {
+                    err += Math.Pow(exp[item.Key] - theo[item.Key], 2);
+                }
+            }
+            return err;
         }
     }
 }

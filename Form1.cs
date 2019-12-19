@@ -18,22 +18,7 @@ namespace CHN_Tool
         }
 
 
-        private void subBtn_Click(object sender, EventArgs e)
-        {
-            //test = C64H49ClN6O5Zn
-            formula = MolForm.Parse(formulaTB.Text);
-            ResLbl.Text = formula + "\n\n" + "MW: " + MolForm.MolWeight(MolForm.ExtractElements(formula)) + "\n\n";
-
-            lastAnalysis = MolForm.Calculate(formula);
-            foreach (KeyValuePair<string, double> element in lastAnalysis)
-            {
-                ResLbl.Text += element.Key + ": " + Math.Round(element.Value / MolForm.MolWeight(MolForm.ExtractElements(formula)) * 100, 3) + "\n";
-            }
-            Sub2Btn.Enabled = CValue.Enabled = HValue.Enabled = SValue.Enabled = NValue.Enabled = FValue.Enabled = true;
-
-        }
-
-        private void Sub2Btn_Click(object sender, EventArgs e)
+        private void ExpChanged (object sender, EventArgs e)
         {
             if (formulaTB.Text == "") return;
             Dictionary<string, double> exp = new Dictionary<string, double>();
@@ -200,6 +185,21 @@ namespace CHN_Tool
                 Imp2Formula.Enabled = Imp2Lower.Enabled = Imp2Upper.Enabled = Imp2Step.Enabled = true;
             }
             else Imp2Formula.Enabled = Imp2Lower.Enabled = Imp2Upper.Enabled = Imp2Step.Enabled = false;
+        }
+
+
+        private void formulaTB_TextChanged(object sender, EventArgs e)
+        {
+            //test = C64H49ClN6O5Zn
+            formula = MolForm.Parse(formulaTB.Text);
+            ResLbl.Text = formula + "\n\n" + "MW: " + MolForm.MolWeight(MolForm.ExtractElements(formula)) + "\n\n";
+
+            lastAnalysis = MolForm.Calculate(formula);
+            foreach (KeyValuePair<string, double> element in lastAnalysis)
+            {
+                ResLbl.Text += element.Key + ": " + Math.Round(element.Value / MolForm.MolWeight(MolForm.ExtractElements(formula)) * 100, 3) + "\n";
+            }
+            CValue.Enabled = HValue.Enabled = SValue.Enabled = NValue.Enabled = FValue.Enabled = true;
         }
     }
 }
