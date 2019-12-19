@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 
 namespace CHN_Tool
@@ -100,13 +99,19 @@ namespace CHN_Tool
             ["Pa"] = 231.04,
             ["U"] = 238.03
         };
-        //gets elements in given formula (no brackets allowed!)
-        public static Dictionary<string, double> getElements(string formula)
+        
+        /// <summary>
+        /// Parses the given string into a dictionary
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <returns></returns>
+        public static Dictionary<string, double> ExtractElements (string formula)
         {
             List<Dictionary<string, double>> result = new List<Dictionary<string, double>>();
             result.Add(new Dictionary<string, double>());
             int i = 0;
-            foreach(Match m in Regex.Matches(formula, pattern)){
+            foreach (Match m in Regex.Matches(formula, pattern))
+            {
                 //Group one == Element string, Assign Group two == Factor
                 if (m.Groups[1].Success)
                 {
@@ -150,10 +155,23 @@ namespace CHN_Tool
             return result.SelectMany(d => d).ToLookup(pair => pair.Key, pair => pair.Value).ToDictionary(group => group.Key, group => group.First());
         }
 
+        public static string Parse(string formula)
+        {
+            var dic = ExtractElements(formula);
+            StringBuilder sb = new StringBuilder();
+            foreach(var item in dic)
+            {
+                sb.Append(item.Key + item.Value);
+            }
+            return sb.ToString();
+        }
+
+
         public static double getWeight(Dictionary<string, double> Elements)
         {
             double MW = 0;
-            foreach(KeyValuePair<string, double> element in Elements){
+            foreach (KeyValuePair<string, double> element in Elements)
+            {
                 MW = MW + (element.Value * weights[element.Key]);
             }
             return MW;
@@ -166,8 +184,8 @@ namespace CHN_Tool
         public static Dictionary<string, double> getAnalysis(string formula)
         {
             Dictionary<string, double> CHNElements = new Dictionary<string, double>();
-            
-            foreach(KeyValuePair<string, double> element in getElements(formula))
+
+            foreach (KeyValuePair<string, double> element in ExtractElements(formula))
             {
                 CHNElements.Add(element.Key, getWeight(element.Key, element.Value));
             }
