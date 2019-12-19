@@ -9,7 +9,7 @@ namespace CHN_Tool
     {
         public Dictionary<string, double> lastAnalysis;
         public string formula;
-        
+
 
         public Form1()
         {
@@ -17,29 +17,34 @@ namespace CHN_Tool
             CValue.Text = HValue.Text = NValue.Text = SValue.Text = FValue.Text = 0.ToString();
         }
 
-
-        private void ExpChanged (object sender, EventArgs e)
+        /// <summary>
+        /// Fires whenever an experimental value changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExpChanged(object sender, EventArgs e)
         {
             if (formulaTB.Text == "") return;
             Dictionary<string, double> exp = new Dictionary<string, double>();
 
-            double val;
-            exp["C"] = Double.TryParse(CValue.Text, out val) ? val : 0;
-            exp["H"] = Double.TryParse(HValue.Text, out val) ? val : 0;
-            exp["N"] = Double.TryParse(NValue.Text, out val) ? val : 0;
-            exp["F"] = Double.TryParse(SValue.Text, out val) ? val : 0;
-            exp["S"] = Double.TryParse(FValue.Text, out val) ? val : 0;
+            exp["C"] = CValue.Text.ToDouble();
+            exp["H"] = HValue.Text.ToDouble();
+            exp["N"] = NValue.Text.ToDouble();
+            exp["F"] = SValue.Text.ToDouble();
+            exp["S"] = FValue.Text.ToDouble();
 
             deltaLbl.Text = "Deltas:\n";
-            foreach (var item in MolForm.Deviation(formulaTB.Text).Deviation(exp))
-            {
-                  deltaLbl.Text += $"{item.Key} [%]: {item.Value} \n";
-            }
+            foreach (var item in MolForm.Deviation(formulaTB.Text).Deviation(exp)) deltaLbl.Text += $"{item.Key} [%]: {item.Value} \n";
 
             Imp1CB.Enabled = Imp2CB.Enabled = true;
             Sub3Btn.Enabled = true;
         }
 
+        /// <summary>
+        /// Click Submit #Rework required
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Sub3Btn_Click(object sender, EventArgs e)
         {
             outputRTB.Text = "";
@@ -87,9 +92,9 @@ namespace CHN_Tool
             Dictionary<string, double> ijAnalysis = new Dictionary<string, double>();
 
             //looping matrices
-            for (int i = 0; i <= ix-1; i++)
+            for (int i = 0; i <= ix - 1; i++)
             {
-                for (int j = 0; j <= jy-1; j++)
+                for (int j = 0; j <= jy - 1; j++)
                 {
                     double iEq = (i * Convert.ToDouble(Imp1Step.Text)) + Convert.ToDouble(Imp1Lower.Text);
                     double jEq = (j * Convert.ToDouble(Imp2Step.Text)) + Convert.ToDouble(Imp2Lower.Text);
@@ -106,13 +111,13 @@ namespace CHN_Tool
                     }
                     foreach (KeyValuePair<string, double> jElements in jForm)
                     {
-                       jSum += jElements.Key + (jElements.Value * jEq);
+                        jSum += jElements.Key + (jElements.Value * jEq);
                     }
-                    formulas[i,j] = iSum + jSum + formula;
-                    outputRTB.Text += "Formula is " + formulas[i,j] + " with MW = " + MolForm.MolWeight(MolForm.ExtractElements(formulas[i,j])) + "\n";
+                    formulas[i, j] = iSum + jSum + formula;
+                    outputRTB.Text += "Formula is " + formulas[i, j] + " with MW = " + MolForm.MolWeight(MolForm.ExtractElements(formulas[i, j])) + "\n";
 
                     //calculate analysis
-                    ijAnalysis = MolForm.Calculate(formulas[i,j]);
+                    ijAnalysis = MolForm.Calculate(formulas[i, j]);
 
                     foreach (string element in new string[] { "C", "H", "N", "S", "F" })
                     {
@@ -132,12 +137,12 @@ namespace CHN_Tool
 
             int ii = 0;
             int ij = 0;
-            double min  = double.PositiveInfinity;
+            double min = double.PositiveInfinity;
             for (int i = 0; i <= ix - 1; i++)
             {
                 for (int j = 0; j <= jy - 1; j++)
                 {
-                    if (lsq[i, j]  <= min)
+                    if (lsq[i, j] <= min)
                     {
                         min = lsq[i, j];
                         ii = i;
@@ -169,6 +174,11 @@ namespace CHN_Tool
 
         }
 
+        /// <summary>
+        /// Checks Impurity 1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Imp1CB_CheckedChanged(object sender, EventArgs e)
         {
             if (Imp1CB.Checked)
@@ -178,6 +188,11 @@ namespace CHN_Tool
             else Imp1Formula.Enabled = Imp1Lower.Enabled = Imp1Upper.Enabled = Imp1Step.Enabled = Imp2CB.Enabled = false;
         }
 
+        /// <summary>
+        /// Checks Impurity 2
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Imp2CB_CheckedChanged(object sender, EventArgs e)
         {
             if (Imp2CB.Checked)
@@ -188,17 +203,20 @@ namespace CHN_Tool
         }
 
 
+        /// <summary>
+        /// Recalculates when Formula has Changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void formulaTB_TextChanged(object sender, EventArgs e)
         {
             //test = C64H49ClN6O5Zn
-            formula = MolForm.Parse(formulaTB.Text);
-            ResLbl.Text = formula + "\n\n" + "MW: " + MolForm.MolWeight(MolForm.ExtractElements(formula)) + "\n\n";
+            formula = formulaTB.Text.Parse();
+            ResLbl.Text = formula + "\n\n" + "MW: " + MolForm.MolWeight(formula) + "\n\n";
 
             lastAnalysis = MolForm.Calculate(formula);
-            foreach (KeyValuePair<string, double> element in MolForm.Deviation(formula))
-            {
-                ResLbl.Text += element.Key + " [%] : " + element.Value + "\n";
-            }
+            foreach (KeyValuePair<string, double> element in MolForm.Deviation(formula)) ResLbl.Text += element.Key + " [%] : " + element.Value + "\n";
+
             CValue.Enabled = HValue.Enabled = SValue.Enabled = NValue.Enabled = FValue.Enabled = true;
         }
     }

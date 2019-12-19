@@ -161,7 +161,7 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="formula"></param>
         /// <returns></returns>
-        public static string Parse(string formula)
+        public static string Parse(this string formula)
         {
             var dic = ExtractElements(formula);
             StringBuilder sb = new StringBuilder();
@@ -222,6 +222,11 @@ namespace CHN_Tool
             return CHNElements;
         }
 
+        /// <summary>
+        /// Calculates CHN Analysis in percent
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <returns></returns>
         internal static Dictionary<string, double> Deviation(string formula)
         {
             var analysis = new Dictionary<string, double>();
@@ -233,7 +238,12 @@ namespace CHN_Tool
             return analysis;
         }
 
-
+        /// <summary>
+        /// Calculates Deviation of Exp and Th
+        /// </summary>
+        /// <param name="th"></param>
+        /// <param name="exp"></param>
+        /// <returns></returns>
         internal static Dictionary<string, double> Deviation (this Dictionary<string, double> th, Dictionary<string, double> exp)
         {
             var analysis = new Dictionary<string, double>();
@@ -259,5 +269,12 @@ namespace CHN_Tool
             }
             return err;
         }
+
+        /// <summary>
+        /// Converts String to Double with Check and Fallback
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        internal static double ToDouble(this string input) => Double.TryParse(input, out double val) ? val : 0;
     }
 }
