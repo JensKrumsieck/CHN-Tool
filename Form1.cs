@@ -22,12 +22,12 @@ namespace CHN_Tool
         {
             //test = C64H49ClN6O5Zn
             formula = MolForm.Parse(formulaTB.Text);
-            ResLbl.Text = formula + "\n\n" + "MW: " + MolForm.getWeight(MolForm.ExtractElements(formula)) + "\n\n";
+            ResLbl.Text = formula + "\n\n" + "MW: " + MolForm.MolWeight(MolForm.ExtractElements(formula)) + "\n\n";
 
-            lastAnalysis = MolForm.getAnalysis(formula);
+            lastAnalysis = MolForm.Calculate(formula);
             foreach (KeyValuePair<string, double> element in lastAnalysis)
             {
-                ResLbl.Text += element.Key + ": " + Math.Round((element.Value / MolForm.getWeight(MolForm.ExtractElements(formula))) * 100, 3) + "\n";
+                ResLbl.Text += element.Key + ": " + Math.Round(element.Value / MolForm.MolWeight(MolForm.ExtractElements(formula)) * 100, 3) + "\n";
             }
             Sub2Btn.Enabled = CValue.Enabled = HValue.Enabled = SValue.Enabled = NValue.Enabled = FValue.Enabled = true;
 
@@ -48,7 +48,7 @@ namespace CHN_Tool
             foreach (string element in new string[] { "C", "H", "N", "S", "F" })
             {
                 if (exp[element] != 0 && lastAnalysis.Keys.Contains(element))
-                    deltaLbl.Text += element + " [%]: " + Math.Round(Math.Abs(exp[element] - (lastAnalysis[element] / MolForm.getWeight(MolForm.ExtractElements(formula))) * 100), 3) + "\n";
+                    deltaLbl.Text += element + " [%]: " + Math.Round(Math.Abs(exp[element] - (lastAnalysis[element] / MolForm.MolWeight(MolForm.ExtractElements(formula))) * 100), 3) + "\n";
             }
 
             Imp1CB.Enabled = Imp2CB.Enabled = true;
@@ -124,16 +124,16 @@ namespace CHN_Tool
                        jSum += jElements.Key + (jElements.Value * jEq);
                     }
                     formulas[i,j] = iSum + jSum + formula;
-                    outputRTB.Text += "Formula is " + formulas[i,j] + " with MW = " + MolForm.getWeight(MolForm.ExtractElements(formulas[i,j])) + "\n";
+                    outputRTB.Text += "Formula is " + formulas[i,j] + " with MW = " + MolForm.MolWeight(MolForm.ExtractElements(formulas[i,j])) + "\n";
 
                     //calculate analysis
-                    ijAnalysis = MolForm.getAnalysis(formulas[i,j]);
+                    ijAnalysis = MolForm.Calculate(formulas[i,j]);
 
                     foreach (string element in new string[] { "C", "H", "N", "S", "F" })
                     {
                         if (exp[element] != 0 && lastAnalysis.Keys.Contains(element))
                         {
-                            double ijAn = (ijAnalysis[element] / MolForm.getWeight(MolForm.ExtractElements(formulas[i, j]))) * 100;
+                            double ijAn = (ijAnalysis[element] / MolForm.MolWeight(MolForm.ExtractElements(formulas[i, j]))) * 100;
                             outputRTB.Text += element + " [%]: " + Math.Round(ijAn, 3) + " => d= " + Math.Round(Math.Abs(exp[element] - ijAn), 3) + "\n";
                             lsq[i, j] = lsq[i, j] + Math.Pow(exp[element] - ijAn, 2);
                         }
@@ -170,12 +170,12 @@ namespace CHN_Tool
             result += formula + " x " + iiEq + " " + Imp1Formula.Text + " x " + ijEq + " " + Imp2Formula.Text + "\n";
 
             //recalculate best analysis
-            ijAnalysis = MolForm.getAnalysis(formulas[ii, ij]);
+            ijAnalysis = MolForm.Calculate(formulas[ii, ij]);
             foreach (string element in new string[] { "C", "H", "N", "S", "F" })
             {
                 if (exp[element] != 0 && lastAnalysis.Keys.Contains(element))
                 {
-                    double ijAn = (ijAnalysis[element] / MolForm.getWeight(MolForm.ExtractElements(formulas[ii, ij]))) * 100;
+                    double ijAn = (ijAnalysis[element] / MolForm.MolWeight(MolForm.ExtractElements(formulas[ii, ij]))) * 100;
                     result += element + " [%]: " + Math.Round(ijAn, 3) + " => d= " + Math.Round(Math.Abs(exp[element] - ijAn), 3) + "\n";
                 }
             }

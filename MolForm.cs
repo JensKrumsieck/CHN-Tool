@@ -155,6 +155,11 @@ namespace CHN_Tool
             return result.SelectMany(d => d).ToLookup(pair => pair.Key, pair => pair.Value).ToDictionary(group => group.Key, group => group.First());
         }
 
+        /// <summary>
+        /// Parses empricial Formula as string
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <returns></returns>
         public static string Parse(string formula)
         {
             var dic = ExtractElements(formula);
@@ -167,27 +172,44 @@ namespace CHN_Tool
         }
 
 
-        public static double getWeight(Dictionary<string, double> Elements)
+        /// <summary>
+        /// gets molecular weight
+        /// </summary>
+        /// <param name="Elements"></param>
+        /// <returns></returns>
+        public static double MolWeight (Dictionary<string, double> Elements)
         {
             double MW = 0;
-            foreach (KeyValuePair<string, double> element in Elements)
+            foreach (var element in Elements)
             {
-                MW = MW + (element.Value * weights[element.Key]);
+                MW = MW + Weight(element.Key, element.Value);
             }
             return MW;
         }
-        public static double getWeight(string el, double no)
+
+        /// <summary>
+        /// gets weight of single element
+        /// </summary>
+        /// <param name="el"></param>
+        /// <param name="no"></param>
+        /// <returns></returns>
+        public static double Weight(string el, double no)
         {
             return weights[el] * no;
         }
 
-        public static Dictionary<string, double> getAnalysis(string formula)
+        /// <summary>
+        /// calculates the CHN Analysis
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <returns></returns>
+        public static Dictionary<string, double> Calculate(string formula)
         {
             Dictionary<string, double> CHNElements = new Dictionary<string, double>();
 
             foreach (KeyValuePair<string, double> element in ExtractElements(formula))
             {
-                CHNElements.Add(element.Key, getWeight(element.Key, element.Value));
+                CHNElements.Add(element.Key, Weight(element.Key, element.Value));
             }
             return CHNElements;
         }
