@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using MathNet.Numerics;
-using MathNet.Numerics.Optimization;
 
 namespace CHN_Tool
 {
@@ -135,17 +133,11 @@ namespace CHN_Tool
                     //add multiplicator to each group element
                     double mult = 1d;
                     if (m.Groups[5].Success && m.Groups[5].Value != "") mult = Convert.ToDouble(m.Groups[5].Value);
-
-                    for (int j = i; j < result.Count; j++)
-                    {
-                        result[j].Factor(mult);
-                    }
+                    for (int j = i; j < result.Count; j++) result[j].Factor(mult);
                     //end of subformula
                     i--;
-
                 }
             }
-
             //combine dictionaries
             return result.SelectMany(d => d).ToLookup(pair => pair.Key, pair => pair.Value).ToDictionary(group => group.Key, group => group.First());
         }
