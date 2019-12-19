@@ -11,7 +11,7 @@ namespace CHN_Tool
     {
         //the regex pattern for molecular formulas, can be changed
         //public static string pattern = @"([A-Z][a-z]*)(\d*)";
-        public static string pattern = @"([A-Z][a-z]*)(\d*\,{0,1}\d*)";
+        public static string pattern = @"([A-Z][a-z]*)(\d*)|(\()|(\))(\d*)";
         //unsupported are all radioactive elements
         public static Dictionary<string, double> weights = new Dictionary<string, double>()
         {
@@ -103,15 +103,51 @@ namespace CHN_Tool
         //gets elements in given formula (no brackets allowed!)
         public static Dictionary<string, double> getElements(string formula)
         {
-            Dictionary<string, double> Elements = new Dictionary<string, double>();
-            foreach(Match match in Regex.Matches(formula, pattern)){
-                if (Elements.Keys.Contains(match.Groups[1].Value)) { 
-                    Elements[match.Groups[1].Value] = Elements[match.Groups[1].Value] + (match.Groups[2].Value != "" ? Convert.ToDouble(match.Groups[2].Value) : 1);
+            List<Dictionary<string, double>> result = new List<Dictionary<string, double>>();
+            result.Add(new Dictionary<string, double>());
+            int i = 0;
+            foreach(Match m in Regex.Matches(formula, pattern)){
+                //Group one == Element string, Assign Group two == Factor
+                if (m.Groups[1].Success)
+                {
+                    //does not contain key -> create
+                    if (!result[i].ContainsKey(m.Groups[1].Value)) result[i][m.Groups[1].Value] = (m.Groups[2].Success && m.Groups[2].Value != "" ? Convert.ToDouble(m.Groups[2].Value) : 1d);
+                    //contains key -> additon
+                    else result[i][m.Groups[1].Value] += (m.Groups[2].Success ? Convert.ToDouble(m.Groups[2].Value) : 1d);
                 }
-                else
-                    Elements[match.Groups[1].Value] = (match.Groups[2].Value != "" ? Convert.ToDouble(match.Groups[2].Value) : 1);
+                //group 3 == left parentheses
+                if (m.Groups[3].Success)
+                {
+                    i++;
+                    result.Add(new Dictionary<string, double>());
+                }
+
+                //group 4 == right parentheses; group 5 == multiplicator
+                if (m.Groups[4].Success)
+                {
+                    //add multiplicator to each group element
+                    double mult = 1d;
+                    if (m.Groups[5].Success && m.Groups[5].Value != "") mult = Convert.ToDouble(m.Groups[5].Value);
+                    for (int j = 0; j < result[i].Count; j++)
+                    {
+                        result[i][result[i].ElementAt(j).Key] = result[i].ElementAt(j).Value * mult;
+                    }
+                    //check if there is a top dict.
+                    for (int j = i + 1; j < result.Count; j++)
+                    {
+                        for (int k = 0; k < result[j].Count; k++)
+                        {
+                            result[j][result[j].ElementAt(k).Key] = result[j].ElementAt(k).Value * mult;
+                        }
+                    }
+                    //end of subformula
+                    i--;
+
+                }
             }
-            return Elements;
+
+            //combine dictionaries
+            return result.SelectMany(d => d).ToLookup(pair => pair.Key, pair => pair.Value).ToDictionary(group => group.Key, group => group.First());
         }
 
         public static double getWeight(Dictionary<string, double> Elements)
