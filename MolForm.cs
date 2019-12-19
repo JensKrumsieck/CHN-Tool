@@ -9,10 +9,10 @@ namespace CHN_Tool
     static class MolForm
     {
         //the regex pattern for molecular formulas, can be changed
-        //public static string pattern = @"([A-Z][a-z]*)(\d*)";
-        public static string pattern = @"([A-Z][a-z]*)(\d*)|(\()|(\))(\d*)";
+        //internal static string pattern = @"([A-Z][a-z]*)(\d*)";
+        internal static string pattern = @"([A-Z][a-z]*)(\d*)|(\()|(\))(\d*)";
         //unsupported are all radioactive elements
-        public static Dictionary<string, double> weights = new Dictionary<string, double>()
+        internal static Dictionary<string, double> weights = new Dictionary<string, double>()
         {
             ["H"] = 1.008,
             ["He"] = 4.0026,
@@ -105,7 +105,7 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="formula"></param>
         /// <returns></returns>
-        public static Dictionary<string, double> ExtractElements(string formula)
+        internal static Dictionary<string, double> ExtractElements(string formula)
         {
             List<Dictionary<string, double>> result = new List<Dictionary<string, double>>();
             result.Add(new Dictionary<string, double>());
@@ -161,7 +161,7 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="formula"></param>
         /// <returns></returns>
-        public static string Parse(this string formula)
+        internal static string Parse(this string formula)
         {
             var dic = ExtractElements(formula);
             StringBuilder sb = new StringBuilder();
@@ -178,7 +178,7 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="Elements"></param>
         /// <returns></returns>
-        public static double MolWeight(Dictionary<string, double> Elements)
+        internal static double MolWeight(Dictionary<string, double> Elements)
         {
             double MW = 0;
             foreach (var element in Elements)
@@ -193,7 +193,7 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="formula"></param>
         /// <returns></returns>
-        public static double MolWeight(string formula) => MolWeight(ExtractElements(formula));
+        internal static double MolWeight(string formula) => MolWeight(ExtractElements(formula));
 
         /// <summary>
         /// gets weight of single element
@@ -211,7 +211,7 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="formula"></param>
         /// <returns></returns>
-        public static Dictionary<string, double> Calculate(string formula)
+        internal static Dictionary<string, double> Calculate(string formula)
         {
             var CHNElements = new Dictionary<string, double>();
 
