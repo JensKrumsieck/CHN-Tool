@@ -126,7 +126,6 @@ namespace CHN_Tool
                     i++;
                     result.Add(new Dictionary<string, double>());
                 }
-
                 //group 4 == right parentheses; group 5 == multiplicator
                 if (m.Groups[4].Success)
                 {
@@ -190,6 +189,13 @@ namespace CHN_Tool
         }
 
         /// <summary>
+        /// Gets Molecular Weight from string
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <returns></returns>
+        public static double MolWeight(string formula) => MolWeight(ExtractElements(formula));
+
+        /// <summary>
         /// gets weight of single element
         /// </summary>
         /// <param name="el"></param>
@@ -207,13 +213,32 @@ namespace CHN_Tool
         /// <returns></returns>
         public static Dictionary<string, double> Calculate(string formula)
         {
-            Dictionary<string, double> CHNElements = new Dictionary<string, double>();
+            var CHNElements = new Dictionary<string, double>();
 
             foreach (KeyValuePair<string, double> element in ExtractElements(formula))
             {
                 CHNElements.Add(element.Key, Weight(element.Key, element.Value));
             }
             return CHNElements;
+        }
+
+        internal static Dictionary<string, double> Deviation(string formula)
+        {
+            var analysis = new Dictionary<string, double>();
+
+            foreach (var item in Calculate(formula))
+            {
+                analysis.Add(item.Key, Math.Round(item.Value / MolWeight(formula) * 100, 3));
+            }
+            return analysis;
+        }
+
+
+        internal static Dictionary<string, double> Deviation (this Dictionary<string, double> th, Dictionary<string, double> exp)
+        {
+            var analysis = new Dictionary<string, double>();
+            foreach (var item in th) if (exp.ContainsKey(item.Key)) analysis.Add(item.Key, Math.Round(Math.Abs(item.Value - exp[item.Key]),3));
+            return analysis;
         }
 
         /// <summary>

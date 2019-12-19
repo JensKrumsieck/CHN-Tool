@@ -23,17 +23,17 @@ namespace CHN_Tool
             if (formulaTB.Text == "") return;
             Dictionary<string, double> exp = new Dictionary<string, double>();
 
-            exp["C"] = Convert.ToDouble(CValue.Text);
-            exp["H"] = Convert.ToDouble(HValue.Text);
-            exp["N"] = Convert.ToDouble(NValue.Text);
-            exp["F"] = Convert.ToDouble(FValue.Text);
-            exp["S"] = Convert.ToDouble(SValue.Text);
+            double val;
+            exp["C"] = Double.TryParse(CValue.Text, out val) ? val : 0;
+            exp["H"] = Double.TryParse(HValue.Text, out val) ? val : 0;
+            exp["N"] = Double.TryParse(NValue.Text, out val) ? val : 0;
+            exp["F"] = Double.TryParse(SValue.Text, out val) ? val : 0;
+            exp["S"] = Double.TryParse(FValue.Text, out val) ? val : 0;
 
             deltaLbl.Text = "Deltas:\n";
-            foreach (string element in new string[] { "C", "H", "N", "S", "F" })
+            foreach (var item in MolForm.Deviation(formulaTB.Text).Deviation(exp))
             {
-                if (exp[element] != 0 && lastAnalysis.Keys.Contains(element))
-                    deltaLbl.Text += element + " [%]: " + Math.Round(Math.Abs(exp[element] - (lastAnalysis[element] / MolForm.MolWeight(MolForm.ExtractElements(formula))) * 100), 3) + "\n";
+                  deltaLbl.Text += $"{item.Key} [%]: {item.Value} \n";
             }
 
             Imp1CB.Enabled = Imp2CB.Enabled = true;
@@ -195,9 +195,9 @@ namespace CHN_Tool
             ResLbl.Text = formula + "\n\n" + "MW: " + MolForm.MolWeight(MolForm.ExtractElements(formula)) + "\n\n";
 
             lastAnalysis = MolForm.Calculate(formula);
-            foreach (KeyValuePair<string, double> element in lastAnalysis)
+            foreach (KeyValuePair<string, double> element in MolForm.Deviation(formula))
             {
-                ResLbl.Text += element.Key + ": " + Math.Round(element.Value / MolForm.MolWeight(MolForm.ExtractElements(formula)) * 100, 3) + "\n";
+                ResLbl.Text += element.Key + " [%] : " + element.Value + "\n";
             }
             CValue.Enabled = HValue.Enabled = SValue.Enabled = NValue.Enabled = FValue.Enabled = true;
         }
