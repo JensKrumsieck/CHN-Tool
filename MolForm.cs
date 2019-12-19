@@ -118,7 +118,7 @@ namespace CHN_Tool
                     //does not contain key -> create
                     if (!result[i].ContainsKey(m.Groups[1].Value)) result[i][m.Groups[1].Value] = (m.Groups[2].Success && m.Groups[2].Value != "" ? Convert.ToDouble(m.Groups[2].Value) : 1d);
                     //contains key -> additon
-                    else result[i][m.Groups[1].Value] += (m.Groups[2].Success ? Convert.ToDouble(m.Groups[2].Value) : 1d);
+                    else result[i][m.Groups[1].Value] += (m.Groups[2].Success && m.Groups[2].Value != "" ? Convert.ToDouble(m.Groups[2].Value) : 1d);
                 }
                 //group 3 == left parentheses
                 if (m.Groups[3].Success)
@@ -193,7 +193,7 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="formula"></param>
         /// <returns></returns>
-        internal static double MolWeight(string formula) => MolWeight(ExtractElements(formula));
+        internal static double MolWeight(this string formula) => MolWeight(ExtractElements(formula));
 
         /// <summary>
         /// gets weight of single element
@@ -227,7 +227,7 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="formula"></param>
         /// <returns></returns>
-        internal static Dictionary<string, double> Deviation(string formula)
+        internal static Dictionary<string, double> Deviation(this string formula)
         {
             var analysis = new Dictionary<string, double>();
 
@@ -244,10 +244,10 @@ namespace CHN_Tool
         /// <param name="th"></param>
         /// <param name="exp"></param>
         /// <returns></returns>
-        internal static Dictionary<string, double> Deviation (this Dictionary<string, double> th, Dictionary<string, double> exp)
+        internal static Dictionary<string, double> Deviation(this Dictionary<string, double> th, Dictionary<string, double> exp)
         {
             var analysis = new Dictionary<string, double>();
-            foreach (var item in th) if (exp.ContainsKey(item.Key)) analysis.Add(item.Key, Math.Round(Math.Abs(item.Value - exp[item.Key]),3));
+            foreach (var item in th) if (exp.ContainsKey(item.Key)) analysis.Add(item.Key, Math.Round(Math.Abs(item.Value - exp[item.Key]), 3));
             return analysis;
         }
 
@@ -257,24 +257,62 @@ namespace CHN_Tool
         /// <param name="theo"></param>
         /// <param name="exp"></param>
         /// <returns></returns>
-        internal static double Error(Dictionary <string, double> theo, Dictionary<string, double> exp)
+        internal static double Error(this Dictionary<string, double> theo, Dictionary<string, double> exp)
         {
             double err = 0;
-            foreach(var item in theo)
+            foreach (var item in theo)
             {
                 if (exp.ContainsKey(item.Key))
                 {
-                    err += Math.Pow(exp[item.Key] - theo[item.Key], 2);
+                    err += Math.Pow(exp[item.Key] - theo[item.Key],2);
                 }
             }
             return err;
         }
 
         /// <summary>
+        /// gets best composition
+        /// </summary>
+        /// <param name="th"></param>
+        /// <param name="exp"></param>
+        /// <param name="impurities"></param>
+        /// <returns></returns>
+        internal static double[] Solve(this string formula, Dictionary<string, double> exp, List<Impurity> impurities)
+        {
+            double[] best = new double[2];
+            double lastErr = double.PositiveInfinity;
+
+            //calculate iterations
+            foreach (Impurity im in impurities)
+            {
+
+            }
+        }
+        /// <summary>
         /// Converts String to Double with Check and Fallback
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         internal static double ToDouble(this string input) => Double.TryParse(input, out double val) ? val : 0;
+    }
+
+
+    /// <summary>
+    /// struct for impurity handling
+    /// </summary>
+    struct Impurity
+    {
+        public string formula;
+        public double lower;
+        public double upper;
+        public double step;
+
+        public Impurity(string formula, double lower, double upper, double step)
+        {
+            this.formula = formula;
+            this.lower = lower;
+            this.upper = upper;
+            this.step = step;
+        }
     }
 }
