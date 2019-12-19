@@ -133,17 +133,10 @@ namespace CHN_Tool
                     //add multiplicator to each group element
                     double mult = 1d;
                     if (m.Groups[5].Success && m.Groups[5].Value != "") mult = Convert.ToDouble(m.Groups[5].Value);
-                    for (int j = 0; j < result[i].Count; j++)
+
+                    for (int j = i; j < result.Count; j++)
                     {
-                        result[i][result[i].ElementAt(j).Key] = result[i].ElementAt(j).Value * mult;
-                    }
-                    //check if there is a top dict.
-                    for (int j = i + 1; j < result.Count; j++)
-                    {
-                        for (int k = 0; k < result[j].Count; k++)
-                        {
-                            result[j][result[j].ElementAt(k).Key] = result[j].ElementAt(k).Value * mult;
-                        }
+                        result[j].Factor(mult);
                     }
                     //end of subformula
                     i--;
@@ -153,6 +146,21 @@ namespace CHN_Tool
 
             //combine dictionaries
             return result.SelectMany(d => d).ToLookup(pair => pair.Key, pair => pair.Value).ToDictionary(group => group.Key, group => group.First());
+        }
+
+        /// <summary>
+        /// multiplies each element with factor
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <param name="mult">The factor</param>
+        /// <returns></returns>
+        internal static Dictionary<string, double> Factor (this Dictionary<string, double> dict, double mult)
+        {
+            for (int j = 0; j < dict.Count; j++)
+            {
+               dict[dict.ElementAt(j).Key] = dict.ElementAt(j).Value * mult;
+            }
+            return dict;
         }
 
         /// <summary>
