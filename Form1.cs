@@ -61,10 +61,26 @@ namespace CHN_Tool
             if (Imp1CB.Checked) impurities.Add(new Impurity(Imp1Formula.Text, Imp1Lower.Text.ToDouble(), Imp1Upper.Text.ToDouble(), Imp1Step.Text.ToDouble()));
             if (Imp2CB.Checked) impurities.Add(new Impurity(Imp2Formula.Text, Imp1Lower.Text.ToDouble(), Imp2Upper.Text.ToDouble(), Imp2Step.Text.ToDouble()));
 
+            //solves all problems ;)
             double[] best = formulaTB.Text.Solve(ReadExperimental(), impurities);
-            string bestForm = $"{formulaTB.Text}({impurities[0].formula}){best[0]}({impurities[1].formula}){best[1]}".Parse();
-            outputRTB.Text = $"Best Result: \n{best[0]} {impurities[0].formula} and {best[1]} {impurities[1].formula}\nTherefore the new formula is:\n{bestForm}\nWith Composition:";
-            foreach (var item in bestForm.Deviation()) outputRTB.Text += $"{item.Key} [%] : {Math.Round(item.Value, 2)}";
+
+            //gets the sum formula of best composition
+            string sumFormula = formulaTB.Text.SumFormula(impurities, best).Parse();
+
+            //output everything.
+            outputRTB.Text = $"Analysis completed for {formulaTB.Text} with Error: {sumFormula.Deviation().Error(ReadExperimental())}.\nBest Values found: {String.Join(", ", best)}\n" +
+                $"Formula therefore is:\n{formulaTB.Text} x ";
+            for(int i = 0; i < impurities.Count; i++) outputRTB.Text += $"{best[i]} {impurities[i].formula} ";
+            outputRTB.Text += $"\nFormula after parsing: {sumFormula}\n";
+
+            //print analysis
+            outputRTB.Text += $"#########################################\n";
+            foreach (var element in sumFormula.Deviation()) outputRTB.Text += $"{element.Key} [%]: {element.Value}\n";
+            outputRTB.Text += $"#########################################\n";
+
+            foreach (var item in MolForm.Deviation(sumFormula).Deviation(ReadExperimental())) outputRTB.Text += $"{item.Key} [%]: {item.Value} \n";
+            outputRTB.Text += $"#########################################\n";
+
         }
 
         /// <summary>

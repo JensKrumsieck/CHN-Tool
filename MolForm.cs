@@ -161,11 +161,17 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="formula"></param>
         /// <returns></returns>
-        internal static string Parse(this string formula)
+        internal static string Parse(this string formula) => ExtractElements(formula).Parse();
+
+        /// <summary>
+        /// Parses dictionary as string
+        /// </summary>
+        /// <param name="composition"></param>
+        /// <returns></returns>
+        internal static string Parse(this Dictionary<string, double> composition)
         {
-            var dic = ExtractElements(formula);
             StringBuilder sb = new StringBuilder();
-            foreach (var item in dic)
+            foreach (var item in composition)
             {
                 sb.Append(item.Key + item.Value);
             }
@@ -264,7 +270,7 @@ namespace CHN_Tool
             {
                 if (exp.ContainsKey(item.Key))
                 {
-                    err += Math.Pow(exp[item.Key] - theo[item.Key],2);
+                    err += Math.Sqrt(Math.Pow(exp[item.Key] - theo[item.Key], 4));
                 }
             }
             return err;
@@ -273,21 +279,72 @@ namespace CHN_Tool
         /// <summary>
         /// gets best composition
         /// </summary>
-        /// <param name="th"></param>
+        /// <param name="formula"></param>
         /// <param name="exp"></param>
         /// <param name="impurities"></param>
         /// <returns></returns>
         internal static double[] Solve(this string formula, Dictionary<string, double> exp, List<Impurity> impurities)
         {
-            double[] best = new double[2];
+            double[] best = new double[impurities.Count];
             double lastErr = double.PositiveInfinity;
 
-            //calculate iterations
-            foreach (Impurity im in impurities)
-            {
+            //get all combinations
+            List<List<double>> comp = new List<List<double>>();
+            foreach (var imp in impurities) comp.Add(imp.Range().ToList());
 
+            foreach (var vec in comp.Cartesian())
+            {
+                //build testformula
+                string testFormula = formula.SumFormula(impurities, vec.ToArray());
+                if (testFormula.Deviation().Error(exp) < lastErr)
+                {
+                    lastErr = testFormula.Deviation().Error(exp);
+                    best = vec.ToArray();
+                }
             }
+
+            return best;
         }
+
+        /// <summary>
+        /// Build Sumformula
+        /// </summary>
+        /// <param name="formula"></param>
+        /// <param name="impurities"></param>
+        /// <param name="vec"></param>
+        /// <returns></returns>
+        internal static string SumFormula(this string formula, List<Impurity> impurities, double[] vec)
+        {
+            string testFormula = formula;
+            for (int i = 0; i < vec.Count(); i++) testFormula += ExtractElements(impurities[i].formula).Factor(vec.ElementAt(i)).Parse();
+            return testFormula;
+        }
+
+
+        /// <summary>
+        /// Builds a Sequence of doubles with steps
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <param name="step"></param>
+        /// <returns></returns>
+        public static IEnumerable<double> Range(this Impurity imp)
+        {
+            for (int i = 0; i < (imp.upper - imp.lower) / imp.step + 1; i++)
+                yield return (i * imp.step) + imp.lower;
+        }
+
+        public static IEnumerable<IEnumerable<T>> Cartesian<T>(this IEnumerable<IEnumerable<T>> sequences)
+        {
+            IEnumerable<IEnumerable<T>> emptyProduct = new[] { Enumerable.Empty<T>() };
+            return sequences.Aggregate(
+                emptyProduct,
+                (accumulator, sequence) =>
+                    from accseq in accumulator
+                    from item in sequence
+                    select accseq.Concat(new[] { item }));
+        }
+
         /// <summary>
         /// Converts String to Double with Check and Fallback
         /// </summary>
