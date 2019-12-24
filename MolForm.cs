@@ -270,7 +270,8 @@ namespace CHN_Tool
             {
                 if (exp.ContainsKey(item.Key))
                 {
-                    err += Math.Sqrt(Math.Pow(exp[item.Key] - theo[item.Key], 4));
+                    //err += Math.Sqrt(Math.Pow(exp[item.Key] - theo[item.Key], 4));
+                    if (Math.Pow(exp[item.Key] - theo[item.Key], 2) > err) err = Math.Pow(exp[item.Key] - theo[item.Key], 2);
                 }
             }
             return err;
