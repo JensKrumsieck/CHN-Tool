@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace CHN_Tool
 {
@@ -107,8 +108,10 @@ namespace CHN_Tool
         /// <returns></returns>
         internal static Dictionary<string, double> ExtractElements(string formula)
         {
-            List<Dictionary<string, double>> result = new List<Dictionary<string, double>>();
-            result.Add(new Dictionary<string, double>());
+            List<Dictionary<string, double>> result = new List<Dictionary<string, double>>
+            {
+                new Dictionary<string, double>()
+            };
             int i = 0;
             foreach (Match m in Regex.Matches(formula, pattern))
             {
@@ -189,7 +192,7 @@ namespace CHN_Tool
             double MW = 0;
             foreach (var element in Elements)
             {
-                MW = MW + Weight(element.Key, element.Value);
+                MW += Weight(element.Key, element.Value);
             }
             return MW;
         }
@@ -339,11 +342,11 @@ namespace CHN_Tool
         {
             IEnumerable<IEnumerable<T>> emptyProduct = new[] { Enumerable.Empty<T>() };
             return sequences.Aggregate(
-                emptyProduct,
-                (accumulator, sequence) =>
-                    from accseq in accumulator
-                    from item in sequence
-                    select accseq.Concat(new[] { item }));
+                 emptyProduct,
+                 (accumulator, sequence) =>
+                     from accseq in accumulator
+                     from item in sequence
+                     select accseq.Concat(new[] { item }));
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CHN_Tool
@@ -38,13 +39,14 @@ namespace CHN_Tool
         /// <returns></returns>
         private Dictionary<string, double> ReadExperimental()
         {
-            Dictionary<string, double> exp = new Dictionary<string, double>();
-
-            exp["C"] = CValue.Text.ToDouble();
-            exp["H"] = HValue.Text.ToDouble();
-            exp["N"] = NValue.Text.ToDouble();
-            exp["F"] = SValue.Text.ToDouble();
-            exp["S"] = FValue.Text.ToDouble();
+            Dictionary<string, double> exp = new Dictionary<string, double>
+            {
+                ["C"] = CValue.Text.ToDouble(),
+                ["H"] = HValue.Text.ToDouble(),
+                ["N"] = NValue.Text.ToDouble(),
+                ["F"] = SValue.Text.ToDouble(),
+                ["S"] = FValue.Text.ToDouble()
+            };
 
             return exp;
         }
@@ -54,23 +56,28 @@ namespace CHN_Tool
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Sub3Btn_Click(object sender, EventArgs e)
+        private async void Sub3Btn_Click(object sender, EventArgs e)
         {
+            outputRTB.Text = ""; //flush Text
+
+            //deactivate button
+            Sub3Btn.Enabled = false;
+            Sub3Btn.Text = "Running ...";
+
             var impurities = new List<Impurity>();
             //read impurities 
             if (Imp1CB.Checked) impurities.Add(new Impurity(Imp1Formula.Text, Imp1Lower.Text.ToDouble(), Imp1Upper.Text.ToDouble(), Imp1Step.Text.ToDouble()));
             if (Imp2CB.Checked) impurities.Add(new Impurity(Imp2Formula.Text, Imp1Lower.Text.ToDouble(), Imp2Upper.Text.ToDouble(), Imp2Step.Text.ToDouble()));
 
             //solves all problems ;)
-            double[] best = formulaTB.Text.Solve(ReadExperimental(), impurities);
-
+            double[] best = await Task.Run(() => formulaTB.Text.Solve(ReadExperimental(), impurities));
             //gets the sum formula of best composition
             string sumFormula = formulaTB.Text.SumFormula(impurities, best).Parse();
 
             //output everything.
             outputRTB.Text = $"Analysis completed for {formulaTB.Text} with Error: {sumFormula.Deviation().Error(ReadExperimental())}.\nBest Values found: {String.Join(", ", best)}\n" +
                 $"Formula therefore is:\n{formulaTB.Text} x ";
-            for(int i = 0; i < impurities.Count; i++) outputRTB.Text += $"{best[i]} {impurities[i].formula} ";
+            for (int i = 0; i < impurities.Count; i++) outputRTB.Text += $"{best[i]} {impurities[i].formula} ";
             outputRTB.Text += $"\nFormula after parsing: {sumFormula}\n";
 
             //print analysis
@@ -81,6 +88,9 @@ namespace CHN_Tool
             foreach (var item in MolForm.Deviation(sumFormula).Deviation(ReadExperimental())) outputRTB.Text += $"{item.Key} [%]: {item.Value} \n";
             outputRTB.Text += $"#########################################\n";
 
+            //reactivate button
+            Sub3Btn.Enabled = true;
+            Sub3Btn.Text = "Recalculate";
         }
 
         /// <summary>
