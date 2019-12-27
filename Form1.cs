@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CHN.Shared;
 
 namespace CHN_Tool
 {

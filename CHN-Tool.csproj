@@ -73,7 +73,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="MolForm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -117,6 +116,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\favicon%281%29.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CHN.Shared\CHN.Shared.csproj">
+      <Project>{b298311d-54e0-4886-a51c-c6fb4d4fd33c}</Project>
+      <Name>CHN.Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
