@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CHN.Shared", "CHN.Shared\CH
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CHN_Tool", "CHN_Tool\CHN_Tool.csproj", "{DF9FCDE6-B8E2-4445-81A5-6C3F45425D0E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHN.Blazor", "CHN.Blazor\CHN.Blazor.csproj", "{5C49F33B-5E88-4CC7-A4BF-E9433C01CF9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,14 @@ Global
 		{DF9FCDE6-B8E2-4445-81A5-6C3F45425D0E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DF9FCDE6-B8E2-4445-81A5-6C3F45425D0E}.Release|x64.ActiveCfg = Release|Any CPU
 		{DF9FCDE6-B8E2-4445-81A5-6C3F45425D0E}.Release|x64.Build.0 = Release|Any CPU
+		{5C49F33B-5E88-4CC7-A4BF-E9433C01CF9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C49F33B-5E88-4CC7-A4BF-E9433C01CF9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C49F33B-5E88-4CC7-A4BF-E9433C01CF9F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5C49F33B-5E88-4CC7-A4BF-E9433C01CF9F}.Debug|x64.Build.0 = Debug|Any CPU
+		{5C49F33B-5E88-4CC7-A4BF-E9433C01CF9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C49F33B-5E88-4CC7-A4BF-E9433C01CF9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C49F33B-5E88-4CC7-A4BF-E9433C01CF9F}.Release|x64.ActiveCfg = Release|Any CPU
+		{5C49F33B-5E88-4CC7-A4BF-E9433C01CF9F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
