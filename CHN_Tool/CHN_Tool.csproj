@@ -4,16 +4,33 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Resources\chn_icon.ico</ApplicationIcon>
+    <Version>1.1.0</Version>
+    <Authors>Jens Krumsieck</Authors>
+    <Company>Jens Krumsieck</Company>
+    <PackageProjectUrl>https://github.com/JensKrumsieck/CHN-Tool</PackageProjectUrl>
+    <PackageIcon>chn_icon.ico</PackageIcon>
+    <RepositoryUrl>https://github.com/JensKrumsieck/CHN-Tool</RepositoryUrl>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\chn_icon.ico" />
+    <None Include="Resources\chn_icon.ico">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\chn_icon.ico" />
   </ItemGroup>
 
+  
   <ItemGroup>
     <ProjectReference Include="..\CHN.Shared\CHN.Shared.csproj" />
   </ItemGroup>
