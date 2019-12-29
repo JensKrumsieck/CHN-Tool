@@ -160,18 +160,18 @@
 		string sumFormula = this.sumFormula.SumFormula(impurities, best).Parse();
 
 		//output everything.
-		output = $"Analysis completed for {this.sumFormula} with Error: {sumFormula.Deviation().Error(ReadExperimental())}.\nBest Values found: {String.Join(", ", best)}\n" +
-				$"Formula therefore is:\n{this.sumFormula} x ";
+		output = $"Analysis completed for {this.sumFormula} with Error: {sumFormula.Deviation().Error(ReadExperimental())}.<br/>Best Values found: {String.Join(", ", best)}<br/>" +
+				$"Formula therefore is:<br/>{this.sumFormula} x ";
 		for (int i = 0; i < impurities.Count; i++) output += $"{best[i]} {impurities[i].formula} ";
-		output += $"\nFormula after parsing: {sumFormula}\n";
+		output += $"<br/>Formula after parsing: {sumFormula}<br/>";
 
 		//print analysis
-		output += $"#########################################\n";
-		foreach (var element in sumFormula.Deviation()) output += $"{element.Key} [%]: {element.Value}\n";
-		output += $"#########################################\n";
+		output += $"#########################################<br/>";
+		foreach (var element in sumFormula.Deviation()) output += $"{element.Key} [%]: {element.Value}<br/>";
+		output += $"#########################################<br/>";
 
-		foreach (var item in MolForm.Deviation(sumFormula).Deviation(ReadExperimental())) output += $"{item.Key} [%]: {item.Value} \n";
-		output += $"#########################################\n";
+		foreach (var item in MolForm.Deviation(sumFormula).Deviation(ReadExperimental())) output += $"{item.Key} [%]: {item.Value} <br/>";
+		output += $"#########################################<br/>";
 		this.StateHasChanged();
 	}
 }
