@@ -10,7 +10,8 @@ namespace CHN.Shared
     {
         //the regex pattern for molecular formulas, can be changed
         //public static string pattern = @"([A-Z][a-z]*)(\d*)";
-        public static string pattern = @"([A-Z][a-z]*)(\d*)|(\()|(\))(\d*)";
+        //public static string pattern = @"([A-Z][a-z]*)(\d*)|(\()|(\))(\d*)";
+        public static string pattern = @"([A-Z][a-z]*)(\d*[,.]?\d*)|(\()|(\))(\d*[,.]?\d*)";
         //unsupported are all radioactive elements
         public static Dictionary<string, double> weights = new Dictionary<string, double>()
         {
@@ -211,7 +212,8 @@ namespace CHN.Shared
         /// <returns></returns>
         public static double Weight(string el, double no)
         {
-            return weights[el] * no;
+            if(weights.ContainsKey(el)) return weights[el] * no;
+            return 0;
         }
 
         /// <summary>
@@ -222,11 +224,7 @@ namespace CHN.Shared
         public static Dictionary<string, double> Calculate(string formula)
         {
             var CHNElements = new Dictionary<string, double>();
-
-            foreach (KeyValuePair<string, double> element in ExtractElements(formula))
-            {
-                CHNElements.Add(element.Key, Weight(element.Key, element.Value));
-            }
+            foreach (KeyValuePair<string, double> element in ExtractElements(formula)) CHNElements.Add(element.Key, Weight(element.Key, element.Value));
             return CHNElements;
         }
 
@@ -239,10 +237,7 @@ namespace CHN.Shared
         {
             var analysis = new Dictionary<string, double>();
 
-            foreach (var item in Calculate(formula))
-            {
-                analysis.Add(item.Key, Math.Round(item.Value / MolWeight(formula) * 100, 3));
-            }
+            foreach (var item in Calculate(formula)) analysis.Add(item.Key, Math.Round(item.Value / MolWeight(formula) * 100, 3));
             return analysis;
         }
 
@@ -255,7 +250,7 @@ namespace CHN.Shared
         public static Dictionary<string, double> Deviation(this Dictionary<string, double> th, Dictionary<string, double> exp)
         {
             var analysis = new Dictionary<string, double>();
-            foreach (var item in th) if (exp.ContainsKey(item.Key)) analysis.Add(item.Key, Math.Round(Math.Abs(item.Value - exp[item.Key]), 3));
+            foreach (var item in th) if (exp.ContainsKey(item.Key) && exp[item.Key] != 0d) analysis.Add(item.Key, Math.Round(Math.Abs(item.Value - exp[item.Key]), 3));
             return analysis;
         }
 
@@ -267,16 +262,12 @@ namespace CHN.Shared
         /// <returns></returns>
         public static double Error(this Dictionary<string, double> theo, Dictionary<string, double> exp)
         {
-            double err = 0;
+            HashSet<double> err = new HashSet<double>();
             foreach (var item in theo)
             {
-                if (exp.ContainsKey(item.Key))
-                {
-                    //err += Math.Sqrt(Math.Pow(exp[item.Key] - theo[item.Key], 4));
-                    if (Math.Pow(exp[item.Key] - theo[item.Key], 2) > err) err = Math.Pow(exp[item.Key] - theo[item.Key], 2);
-                }
+                if (exp.ContainsKey(item.Key)) err.Add(Math.Pow(exp[item.Key] - theo[item.Key], 2));
             }
-            return err;
+            return Math.Sqrt(err.Sum()) * err.Max();
         }
 
         /// <summary>
@@ -288,25 +279,19 @@ namespace CHN.Shared
         /// <returns></returns>
         public static double[] Solve(this string formula, Dictionary<string, double> exp, List<Impurity> impurities)
         {
-            double[] best = new double[impurities.Count];
-            double lastErr = double.PositiveInfinity;
+            HashSet<Result> calc = new HashSet<Result>();
 
             //get all combinations
-            List<List<double>> comp = new List<List<double>>();
+            HashSet<List<double>> comp = new HashSet<List<double>>();
             foreach (var imp in impurities) comp.Add(imp.Range().ToList());
 
             foreach (var vec in comp.Cartesian())
             {
                 //build testformula
                 string testFormula = formula.SumFormula(impurities, vec.ToArray());
-                if (testFormula.Deviation().Error(exp) < lastErr)
-                {
-                    lastErr = testFormula.Deviation().Error(exp);
-                    best = vec.ToArray();
-                }
+                calc.Add(new Result(testFormula, testFormula.Deviation().Error(exp), vec.ToArray()));
             }
-
-            return best;
+            return calc.OrderBy(s => s.err).First().vec;          
         }
 
         /// <summary>
@@ -373,6 +358,23 @@ namespace CHN.Shared
             this.lower = lower;
             this.upper = upper;
             this.step = step;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public struct Result
+    {
+        public string formula;
+        public double err;
+        public double[] vec;
+
+        public Result(string formula, double err, double[] vec)
+        {
+            this.formula = formula;
+            this.err = err;
+            this.vec = vec;
         }
     }
 }

@@ -10,7 +10,7 @@
 	</div>
 	@if(!String.IsNullOrEmpty(sumFormula) && sumFormula.Length > 2)
 	{
-		<p>Parsed Sum Formula: @MolForm.Parse(sumFormula) - Molecular Weight: @MolForm.MolWeight(sumFormula)</p>
+		<p>Parsed Sum Formula: @MolForm.Parse(sumFormula) - Molecular Weight: @MolForm.MolWeight(sumFormula) </p>
 		<ul>
 			@foreach (KeyValuePair<string, double> item in MolForm.Deviation(sumFormula))
 			{

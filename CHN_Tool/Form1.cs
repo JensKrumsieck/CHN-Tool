@@ -131,13 +131,18 @@ namespace CHN_Tool
         private void formulaTB_TextChanged(object sender, EventArgs e)
         {
             //test = C64H49ClN6O5Zn
-            formula = formulaTB.Text.Parse();
-            ResLbl.Text = formula + "\n\n" + "MW: " + formula.MolWeight() + "\n\n";
+            try
+            {
+                formula = formulaTB.Text.Parse();
+                ResLbl.Text = formula + "\n\n" + "MW: " + formula.MolWeight() + "\n\n";          
 
-            lastAnalysis = MolForm.Calculate(formula);
-            foreach (KeyValuePair<string, double> element in MolForm.Deviation(formula)) ResLbl.Text += element.Key + " [%] : " + element.Value + "\n";
+                lastAnalysis = MolForm.Calculate(formula);
+                foreach (KeyValuePair<string, double> element in MolForm.Deviation(formula)) ResLbl.Text += element.Key + " [%] : " + element.Value + "\n";
 
-            CValue.Enabled = HValue.Enabled = SValue.Enabled = NValue.Enabled = FValue.Enabled = true;
+                CValue.Enabled = HValue.Enabled = SValue.Enabled = NValue.Enabled = FValue.Enabled = true;
+            }
+
+            catch { ResLbl.Text = "Parse Error"; }
         }
     }
 }
