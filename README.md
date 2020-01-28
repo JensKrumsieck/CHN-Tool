@@ -5,6 +5,3 @@
 ![GitHub Pre-Releases](https://img.shields.io/github/downloads-pre/JensKrumsieck/CHN-Tool/latest/total)
 
 Recalculate your elemental analysis (CHN) with impurities.
-
-
-C# Rebuild of [Jasper CHN](http://phoenix.tuwien.ac.at/jasper/ANALYSE2.HTM) Version 2.
