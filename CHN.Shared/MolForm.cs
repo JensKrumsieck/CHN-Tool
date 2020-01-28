@@ -141,7 +141,26 @@ namespace CHN.Shared
                 }
             }
             //combine dictionaries
-            return result.SelectMany(d => d).ToLookup(pair => pair.Key, pair => pair.Value).ToDictionary(group => group.Key, group => group.First());
+            return result.Merge();
+        }
+
+        /// <summary>
+        /// merges all dictionaries
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static Dictionary<string, double> Merge(this IEnumerable<Dictionary<string, double>> input)
+        {
+            var dic = new Dictionary<string, double>();
+            foreach (var elements in input)
+            {
+                foreach (var element in elements)
+                {
+                    if (dic.ContainsKey(element.Key)) dic[element.Key] += element.Value;
+                    else dic.Add(element.Key, element.Value); 
+                }
+            }
+            return dic;
         }
 
         /// <summary>
