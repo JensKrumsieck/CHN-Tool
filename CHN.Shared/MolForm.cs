@@ -136,8 +136,8 @@ namespace CHN.Shared
                     double mult = 1d;
                     if (m.Groups[5].Success && m.Groups[5].Value != "") mult = Convert.ToDouble(m.Groups[5].Value);
                     for (int j = i; j < result.Count; j++) result[j].Factor(mult);
-                    //end of subformula
-                    i--;
+                    ////end of subformula
+                    //i--;
                 }
             }
             //combine dictionaries
