@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CHN.Shared\CHN.Shared.csproj" />
+    <ProjectReference Include="..\CHN.Shared.Components\CHN.Shared.Components.csproj" />
   </ItemGroup>
 
   <ItemGroup>
