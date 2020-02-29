@@ -1,108 +1,136 @@
 ﻿<div class="chnform">
 	<div class="container">
-		<p class="h3">Sum Formula</p>
-		<div class="form-group">
-			<label for="sumFormula">Sum Formula</label>
-			<input type="text" class="form-control" id="sumFormula" aria-describedby="sumFormulaHelp" @bind="@sumFormula" @oninput="(ChangeEventArgs e) => sumFormula = e.Value.ToString()" />
-			<small id="sumFormulaHelp" class="form-text text-muted">Enter the sum formula of interest.</small>
+		<p class="h3 title is-3">Sum Formula</p>
+		<div class="form-group field">
+			<div class="control">
+				<label for="sumFormula" class="label">Sum Formula</label>
+				<input type="text" class="form-control input" id="sumFormula" aria-describedby="sumFormulaHelp" @bind="@sumFormula" @oninput="(ChangeEventArgs e) => sumFormula = e.Value.ToString()" />
+				<small id="sumFormulaHelp" class="help form-text text-muted">Enter the sum formula of interest.</small>
+			</div>
 		</div>
 		@if (!String.IsNullOrEmpty(sumFormula) && sumFormula.Length > 2)
 		{
-			<p>Parsed Sum Formula: @MolForm.Parse(sumFormula) - Molecular Weight: @MolForm.MolWeight(sumFormula) </p>
-			<ul>
-				@foreach (KeyValuePair<string, double>
+		<p>Parsed Sum Formula: @MolForm.Parse(sumFormula) - Molecular Weight: @MolForm.MolWeight(sumFormula) </p>
+		<ul>
+			@foreach (KeyValuePair<string, double>
  item in MolForm.Deviation(sumFormula))
 				{
-		<li>@item.Key [%]: @item.Value</li>
+			<li>@item.Key [%]: @item.Value</li>
 				}
-			</ul>
+		</ul>
 		}
 
 
-		<div class="row">
-			<div class="col-sm-6">
-				<p class="h3">Experimental Values</p>
-				<div class="form-group row">
-					<label for="expC" class="col-form-label col-sm-2">C [%]:</label>
-					<input type="text" class="form-control col-sm-10" id="expC" @bind="@expC" />
+		<div class="row columns">
+			<div class="col-sm-6 column">
+				<p class="h3 title is-3">Experimental Values</p>
+				<div class="form-group field">
+					<div class="control">
+						<label for="expC" class="label">C [%]:</label>
+						<input type="text" class="form-control input" id="expC" @bind="@expC" />
+					</div>
 				</div>
-				<div class="form-group row">
-					<label for="expH" class="col-form-label col-sm-2">H [%]:</label>
-					<input type="text" class="form-control col-sm-10" id="expH" @bind="expH" />
+				<div class="form-group field">
+					<div class="control">
+						<label for="expH" class="label">H [%]:</label>
+						<input type="text" class="input form-control" id="expH" @bind="expH" />
+					</div>
 				</div>
-				<div class="form-group row">
-					<label for="expN" class="col-form-label col-sm-2">N [%]:</label>
-					<input type="text" class="form-control col-sm-10" id="expN" @bind="expN" />
-				</div>
-
-				<div class="form-group row">
-					<label for="expS" class="col-form-label col-sm-2">S [%]:</label>
-					<input type="text" class="form-control col-sm-10" id="expS" @bind="expS" />
-				</div>
-
-				<div class="form-group row">
-					<label for="expF" class="col-form-label col-sm-2">F [%]:</label>
-					<input type="text" class="form-control col-sm-10" id="expF" @bind="expF" />
+				<div class="form-group field">
+					<div class="control">
+						<label for="expN" class="label">N [%]:</label>
+						<input type="text" class="input form-control " id="expN" @bind="expN" />
+					</div>
 				</div>
 
+				<div class="form-group field">
+					<div class="control">
+						<label for="expS" class="label">S [%]:</label>
+						<input type="text" class="input form-control" id="expS" @bind="expS" />
+					</div>
+				</div>
+
+				<div class="form-group field">
+					<div class="control">
+						<label for="expF" class="label">F [%]:</label>
+						<input type="text" class="input form-control" id="expF" @bind="expF" />
+					</div>
+				</div>
 				<!--output deltas-->
 				@if (!String.IsNullOrEmpty(sumFormula) && sumFormula.Length > 2)
-				{
-					<ul>
+							{
+				<ul>
 					@foreach (KeyValuePair<string, double> item in MolForm.Deviation(sumFormula).Deviation(ReadExperimental()))
-					{
+								{
 					<li>@item.Key [%]: @item.Value</li>
-					}
-					</ul>
-				}
-			</div>
-			<div class="col-sm-6">
-				<p class="h3">Possible Impurities</p>
-				<p class="h4">Impurity 1</p>
-				<div class="form-group row">
-					<label for="imp1Form" class="col-form-label col-sm-2">Formula</label>
-					<input type="text" class="form-control col-sm-10" id="imp1Form" @bind="@imp1Form" />
-				</div>
-				<div class="row">
-					<div class="form-group row col-sm-6">
-						<label for="imp1lower" class="col-form-label col-sm-4">Lower</label>
-						<input type="text" class="form-control col-sm-8" id="imp1lower" @bind="@imp1Lower" />
-					</div>
-					<div class="form-group row col-sm-6">
-						<label for="imp1upper" class="col-form-label col-sm-4">Upper</label>
-						<input type="text" class="form-control col-sm-8" id="imp1upper" @bind="@imp1Upper" />
-					</div>
-					<div class="form-group row col-sm-6">
-						<label for="imp1step" class="col-form-label col-sm-4">Step</label>
-						<input type="text" class="form-control col-sm-8" id="imp1step" @bind="@imp1Step" />
-					</div>
-				</div>
-				<p class="h4">Impurity 2</p>
-				<div class="form-group row">
-					<label for="imp2Form" class="col-form-label col-sm-2">Formula</label>
-					<input type="text" class="form-control col-sm-10" id="imp2Form" @bind="@imp2Form" />
-				</div>
-				<div class="row">
-					<div class="form-group row col-sm-6">
-						<label for="imp2lower" class="col-form-label col-sm-4">Lower</label>
-						<input type="text" class="form-control col-sm-8" id="imp2lower" @bind="@imp2Lower" />
-					</div>
-					<div class="form-group row col-sm-6">
-						<label for="imp2upper" class="col-form-label col-sm-4">Upper</label>
-						<input type="text" class="form-control col-sm-8" id="imp2upper" @bind="@imp2Upper" />
-					</div>
-					<div class="form-group row col-sm-6">
-						<label for="imp2step" class="col-form-label col-sm-4">Step</label>
-						<input type="text" class="form-control col-sm-8" id="imp2step" @bind="@imp2Step" />
-					</div>
-				</div>
-				<input type="button" value="Recalculate" @onclick="@(async () => await Recalculate())" />
+								}
+				</ul>
+							}
 			</div>
 
-			<p>
-				<span style="white-space: pre-line">@output</span>
-			</p>
+
+			<div class="col-sm-6 column">
+				<p class="h3 title is-3">Possible Impurities</p>
+				<p class="h4 title is-4">Impurity 1</p>
+				<div class="form-group field">
+					<div class="control">
+						<label for="imp1Form" class="label">Formula</label>
+						<input type="text" class="input form-control" id="imp1Form" @bind="@imp1Form" />
+					</div>
+				</div>
+				<div class="row columns">
+					<div class="form-group col-sm-6 column field">
+						<div class="control">
+							<label for="imp1lower" class="label">Lower</label>
+							<input type="text" class="input form-control" id="imp1lower" @bind="@imp1Lower" />
+						</div>
+					</div>
+					<div class="form-group col-sm-6 column field">
+						<div class="control">
+							<label for="imp1upper" class="label">Upper</label>
+							<input type="text" class="input form-control" id="imp1upper" @bind="@imp1Upper" />
+						</div>
+					</div>
+					<div class="form-group col-sm-6 column field">
+						<div class="control">
+							<label for="imp1step" class="label">Step</label>
+							<input type="text" class="input form-control" id="imp1step" @bind="@imp1Step" />
+						</div>
+					</div>
+				</div>
+				<p class="h4 title is-4">Impurity 2</p>
+				<div class="form-group field">
+					<div class="control">
+						<label for="imp1Form" class="label">Formula</label>
+						<input type="text" class="input form-control" id="imp2Form" @bind="@imp2Form" />
+					</div>
+				</div>
+				<div class="row columns">
+					<div class="form-group col-sm-6 column field">
+						<div class="control">
+							<label for="imp1lower" class="label">Lower</label>
+							<input type="text" class="input form-control col-sm-8" id="imp2lower" @bind="@imp2Lower" />
+						</div>
+					</div>
+					<div class="form-group col-sm-6 column field">
+						<div class="control">
+							<label for="imp1upper" class="label">Upper</label>
+							<input type="text" class="input form-control" id="imp2upper" @bind="@imp2Upper" />
+						</div>
+					</div>
+					<div class="form-group field col-sm-6 column">
+						<div class="control">
+							<label for="imp1step" class="label">Step</label>
+							<input type="text" class="input form-control" id="imp2step" @bind="@imp2Step" />
+						</div>
+					</div>
+				</div>
+				<input type="button" class="button" value="Recalculate" @onclick="@(async () => await Recalculate())" />
+			</div>
 		</div>
+		<p>
+			<span style="white-space: pre-line">@output</span>
+		</p>
 	</div>
 	@code{
 		//sum formula binding
