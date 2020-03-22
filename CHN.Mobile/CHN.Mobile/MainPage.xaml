@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="CHN.Mobile.MainPage">
+    <ContentPage.Resources>
+        <Style TargetType="{x:Type Entry}" x:Key="DeviationEntry">
+            <Setter Property="ClearButtonVisibility" Value="WhileEditing"/>
+            <Setter Property="Keyboard" Value="Numeric" />
+            <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+        </Style>
+        <Style TargetType="{x:Type Label}" x:Key="Headline">
+            <Setter Property="FontSize" Value="Title"/>
+            <Setter Property="TextColor" Value="Black" />
+        </Style>
+    </ContentPage.Resources>
+    <ScrollView>
+    <StackLayout HorizontalOptions="FillAndExpand" Padding="10">
+            <FlexLayout Direction="Column">
+                <StackLayout FlexLayout.AlignSelf="Stretch">
+            <!-- Place new controls here -->
+            <Label Text="Sum Formula" Style="{StaticResource Headline}"/>
+            <Entry x:Name="SumFormula" TextChanged="SumFormula_TextChanged" Placeholder="Enter Sumformula" ClearButtonVisibility="WhileEditing"/>
+            <Label x:Name="SumFormulaParsed"/>
+            <StackLayout BindableLayout.ItemsSource="{Binding Theoretical}" x:Name="theoreticalView">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Key, StringFormat='{0}:'}"/>
+                                <Label Text="{Binding Value, StringFormat='{0}%'}"/>
+                            </StackLayout>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>                
+            </StackLayout>
+                </StackLayout>
+            <StackLayout FlexLayout.AlignSelf="Stretch">
+                <Label Text="Experimental Values" Style="{StaticResource Headline}"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="C[%]:" VerticalOptions="Center"/>
+                <Entry x:Name="expC" TextChanged="Exp_TextChanged" Placeholder="C[%]" Style="{StaticResource DeviationEntry}" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="H[%]:" VerticalOptions="Center"/>
+                <Entry x:Name="expH" TextChanged="Exp_TextChanged" Placeholder="H[%]" Style="{StaticResource DeviationEntry}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="N[%]:" VerticalOptions="Center"/>
+                <Entry x:Name="expN" TextChanged="Exp_TextChanged" Placeholder="N[%]" Style="{StaticResource DeviationEntry}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="S[%]:" VerticalOptions="Center"/>
+                <Entry x:Name="expS" TextChanged="Exp_TextChanged" Placeholder="S[%]" Style="{StaticResource DeviationEntry}"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="F[%]:" VerticalOptions="Center"/>
+                <Entry x:Name="expF" TextChanged="Exp_TextChanged" Placeholder="F[%]" Style="{StaticResource DeviationEntry}"/>
+            </StackLayout>
+            <StackLayout BindableLayout.ItemsSource="{Binding Experimental}" x:Name="deviationView">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Key, StringFormat='{0}:'}"/>
+                            <Label Text="{Binding Value, StringFormat='{0}%'}"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                </StackLayout>
+            </FlexLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
