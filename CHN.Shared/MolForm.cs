@@ -108,7 +108,7 @@ namespace CHN.Shared
         /// <returns></returns>
         public static Dictionary<string, double> ExtractElements(string formula)
         {
-            List<Dictionary<string, double>> result = new List<Dictionary<string, double>>
+            var result = new List<Dictionary<string, double>>
             {
                 new Dictionary<string, double>()
             };
@@ -152,12 +152,12 @@ namespace CHN.Shared
         public static Dictionary<string, double> Merge(this IEnumerable<Dictionary<string, double>> input)
         {
             var dic = new Dictionary<string, double>();
-            foreach (var elements in input)
+            foreach (Dictionary<string, double> elements in input)
             {
-                foreach (var element in elements)
+                foreach (KeyValuePair<string, double> element in elements)
                 {
                     if (dic.ContainsKey(element.Key)) dic[element.Key] += element.Value;
-                    else dic.Add(element.Key, element.Value); 
+                    else dic.Add(element.Key, element.Value);
                 }
             }
             return dic;
@@ -192,8 +192,8 @@ namespace CHN.Shared
         /// <returns></returns>
         public static string Parse(this Dictionary<string, double> composition)
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (var item in composition)
+            var sb = new StringBuilder();
+            foreach (KeyValuePair<string, double> item in composition)
             {
                 sb.Append(item.Key + item.Value);
             }
@@ -209,7 +209,7 @@ namespace CHN.Shared
         public static double MolWeight(Dictionary<string, double> Elements)
         {
             double MW = 0;
-            foreach (var element in Elements)
+            foreach (KeyValuePair<string, double> element in Elements)
             {
                 MW += Weight(element.Key, element.Value);
             }
@@ -231,7 +231,7 @@ namespace CHN.Shared
         /// <returns></returns>
         public static double Weight(string el, double no)
         {
-            if(weights.ContainsKey(el)) return weights[el] * no;
+            if (weights.ContainsKey(el)) return weights[el] * no;
             return 0;
         }
 
@@ -256,7 +256,7 @@ namespace CHN.Shared
         {
             var analysis = new Dictionary<string, double>();
 
-            foreach (var item in Calculate(formula)) analysis.Add(item.Key, Math.Round(item.Value / MolWeight(formula) * 100, 3));
+            foreach (KeyValuePair<string, double> item in Calculate(formula)) analysis.Add(item.Key, Math.Round(item.Value / MolWeight(formula) * 100, 3));
             return analysis;
         }
 
@@ -269,7 +269,7 @@ namespace CHN.Shared
         public static Dictionary<string, double> Deviation(this Dictionary<string, double> th, Dictionary<string, double> exp)
         {
             var analysis = new Dictionary<string, double>();
-            foreach (var item in th) if (exp.ContainsKey(item.Key) && exp[item.Key] != 0d) analysis.Add(item.Key, Math.Round(Math.Abs(item.Value - exp[item.Key]), 3));
+            foreach (KeyValuePair<string, double> item in th) if (exp.ContainsKey(item.Key) && exp[item.Key] != 0d) analysis.Add(item.Key, Math.Round(Math.Abs(item.Value - exp[item.Key]), 3));
             return analysis;
         }
 
@@ -281,8 +281,8 @@ namespace CHN.Shared
         /// <returns></returns>
         public static double Error(this Dictionary<string, double> theo, Dictionary<string, double> exp)
         {
-            HashSet<double> err = new HashSet<double>();
-            foreach (var item in theo)
+            var err = new HashSet<double>();
+            foreach (KeyValuePair<string, double> item in theo)
             {
                 if (exp.ContainsKey(item.Key)) err.Add(Math.Pow(exp[item.Key] - theo[item.Key], 2));
             }
@@ -298,19 +298,19 @@ namespace CHN.Shared
         /// <returns></returns>
         public static double[] Solve(this string formula, Dictionary<string, double> exp, List<Impurity> impurities)
         {
-            HashSet<Result> calc = new HashSet<Result>();
+            var calc = new HashSet<Result>();
 
             //get all combinations
-            HashSet<List<double>> comp = new HashSet<List<double>>();
-            foreach (var imp in impurities) comp.Add(imp.Range().ToList());
+            var comp = new HashSet<List<double>>();
+            foreach (Impurity imp in impurities) comp.Add(imp.Range().ToList());
 
-            foreach (var vec in comp.Cartesian())
+            foreach (IEnumerable<double> vec in comp.Cartesian())
             {
                 //build testformula
                 string testFormula = formula.SumFormula(impurities, vec.ToArray());
                 calc.Add(new Result(testFormula, testFormula.Deviation().Error(exp), vec.ToArray()));
             }
-            return calc.OrderBy(s => s.err).First().vec;          
+            return calc.OrderBy(s => s.err).First().vec;
         }
 
         /// <summary>
@@ -357,7 +357,7 @@ namespace CHN.Shared
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static double ToDouble(this string input) => Double.TryParse(input, out double val) ? val : 0;
+        public static double ToDouble(this string input) => double.TryParse(input, out double val) ? val : 0;
     }
 
 
