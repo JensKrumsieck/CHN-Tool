@@ -1,3 +1,171 @@
 ﻿@page "/"
+@using ChemSharp.Molecules.ElementalAnalysis
+@using ChemSharp.Extensions
+@using ChemSharp.Molecules.Extensions
+@using System.Globalization
 
-<CHNForm/>
+<div class="chn container">
+	<EditForm EditContext="_ctx">
+		<p class="h4">Experimental Data</p>
+		<div class="form-group">
+			<label for="sumFormula">Sum Formula</label>
+			<LiveInputText class="form-control" id="sumFormula" @bind-Value="@_analysis.Formula" />
+		</div>
+		@if (!string.IsNullOrEmpty(_analysis.Formula) && _analysis.Formula.Length > 2)
+		{
+			<p>Parsed Formula is: @_analysis.Formula.Parse() - Molecular Weight: @_analysis.Formula.Parse().MolecularWeight().ToString("N4")</p>
+
+			<ul>
+				@foreach (var (key, value) in _analysis.TheoreticalAnalysis)
+				{
+					<li>@key [%]: @value.ToString("N3")</li>
+				}
+			</ul>
+		}
+
+		<div class="input-group mb-3">
+			<div class="input-group-prepend">
+				<div class="input-group-text">C [%]</div>
+			</div>
+			<LiveInputText class="form-control" id="expC" @bind-Value="@expC" />
+		</div>
+		<div class="input-group mb-3">
+			<div class="input-group-prepend">
+				<div class="input-group-text">H [%]</div>
+			</div>
+			<LiveInputText class="form-control" id="expH" @bind-Value="@expH" />
+		</div>
+		<div class="input-group mb-3">
+			<div class="input-group-prepend">
+				<div class="input-group-text">N [%]</div>
+			</div>
+			<LiveInputText class="form-control" id="expN" @bind-Value="@expN" />
+		</div>
+		<div class="input-group mb-3">
+			<div class="input-group-prepend">
+				<div class="input-group-text">S [%]</div>
+			</div>
+			<LiveInputText class="form-control" id="expS" @bind-Value="@expS" />
+		</div>
+		<div class="input-group mb-3">
+			<div class="input-group-prepend">
+				<div class="input-group-text">F [%]</div>
+			</div>
+			<LiveInputText class="form-control" id="expF" @bind-Value="@expF" />
+		</div>
+		@if (_analysis.Deviation != null)
+		{
+			<ul>
+				@foreach (var (key, value) in _analysis.Deviation)
+				{
+					<li>@key [%]: @value.ToString("N3")</li>
+				}
+			</ul>
+		}
+		<p class="h4">
+			Impurities (@_analysis.Impurities.Count) <button class="btn btn-outline-primary" @onclick="@(() => _analysis.Impurities.Add(new Impurity("", 0, 1, 0.1)))">Add Impurity</button>
+		</p>
+		@foreach (var impurity in _analysis.Impurities)
+		{
+	<div class="input-group mb-3">
+		<div class="input-group-prepend">
+			<div class="input-group-text">Sum Formula</div>
+		</div>
+		<LiveInputText class="form-control" @bind-Value="@impurity.Formula" />
+		<button class="btn btn-outline-danger btn-sm" @onclick="@(() => _analysis.Impurities.Remove(impurity))">Remove Impurity</button>
+	</div>
+			<div class="row">
+				<div class="input-group mb-3 col-4">
+					<div class="input-group-prepend">
+						<div class="input-group-text">Lower</div>
+					</div>
+					<InputNumber class="form-control" @bind-Value="@impurity.Lower" />
+				</div>
+				<div class="input-group mb-3 col-4">
+					<div class="input-group-prepend">
+						<div class="input-group-text">Upper</div>
+					</div>
+					<InputNumber class="form-control" @bind-Value="@impurity.Upper" />
+				</div>
+				<div class="input-group mb-3 col-4">
+					<div class="input-group-prepend">
+						<div class="input-group-text">Step</div>
+					</div>
+					<InputNumber class="form-control" @bind-Value="@impurity.Step" />
+				</div>
+			</div>
+			
+		}
+
+		<button class="btn btn-primary" @onclick="@(async () => await Calculate())">Calculate</button>
+	</EditForm>
+	<p>
+		<span style="white-space: pre-line">@output</span>
+	</p>
+</div>
+
+@code{
+
+	Analysis _analysis;
+	EditContext _ctx;
+
+	string expC;
+	string expH;
+	string expN;
+	string expS;
+	string expF;
+
+	Dictionary<string,double> _experimentalData = new Dictionary<string, double>();
+
+	string output;
+
+	protected override void OnInitialized()
+	{
+		_analysis = new Analysis();
+		_ctx = new EditContext(_analysis);
+		_ctx.OnFieldChanged += CtxOnOnFieldChanged;
+		base.OnInitialized();
+	}
+
+	private void CtxOnOnFieldChanged(object? sender, FieldChangedEventArgs e)
+	{
+		if(e.FieldIdentifier.FieldName.Contains("exp")) RegenerateExperimentalData();
+	}
+
+	async Task Calculate()
+	{
+		output = "";
+		var best = await _analysis.Solve();
+		var newFormula = _analysis.Formula.SumFormula(_analysis.Impurities, best);
+		var newTheory = newFormula.ElementalAnalysis();
+		var newDeviation = ElementalAnalysisUtil.Deviation(newTheory, _analysis.ExperimentalAnalysis);
+		var error = ElementalAnalysisUtil.Error(newTheory, _analysis.ExperimentalAnalysis);
+		output += $"Analysis completed for {_analysis.Formula} with Error: {error:N5}\nBest Values found: {string.Join(", ", best)}.\n";
+		output += $"New Formula is: {_analysis.Formula} x ";
+		for (var i = 0; i < _analysis.Impurities.Count; i++) output += $"{best[i]:N2} {_analysis.Impurities[i].Formula}  {(i != _analysis.Impurities.Count - 1 ? " x" : "")}";
+		output += $"(parsed: {newFormula.Parse()})\n";
+		output += "#############################\n";
+		foreach (var (key, value) in newFormula.ElementalAnalysis()) output += $"{key} [%]: {value}\n";
+		output += "#############################\n";
+		output += "Delta:\n";
+		foreach (var (key, value) in newDeviation) output += $"{key} [%]: {value}\n";
+		output += "#############################\n";
+		StateHasChanged();
+	}
+
+	/// <summary>
+	/// Regenerates experimental data from fields
+	/// </summary>
+	void RegenerateExperimentalData()
+	{
+		_experimentalData = new Dictionary<string, double>
+		{
+			{"C", expC.ToDouble()},
+			{"H", expH.ToDouble()},
+			{"N", expN.ToDouble()},
+			{"S", expS.ToDouble()},
+			{"F", expF.ToDouble()},
+		};
+		_analysis.ExperimentalAnalysis = _experimentalData;
+	}
+}

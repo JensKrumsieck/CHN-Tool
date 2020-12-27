@@ -4,4 +4,6 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/JensKrumsieck/CHN-Tool)
 ![GitHub Pre-Releases](https://img.shields.io/github/downloads-pre/JensKrumsieck/CHN-Tool/latest/total)
 
-Recalculate your elemental analysis (CHN) with impurities.
+Recalculates elemental analysis (CHN) with possible impurities.
+
+Uses [ChemSharp](https://github.com/JensKrumsieck/ChemSharp) by Jens Krumsieck
