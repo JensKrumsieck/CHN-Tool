@@ -57,13 +57,10 @@ namespace CHN_Tool
         private async void Sub3Btn_Click(object sender, EventArgs e)
         {
             outputRTB.Text = ""; //flush Text
-
             //deactivate button
             Sub3Btn.Enabled = false;
-            Sub3Btn.Text = "Running ...";
             var items = Analysis.Impurities.ToList();
             foreach (var item in items) Analysis.Impurities.Remove(item);
-
             //read impurities 
             if (Imp1CB.Checked) Analysis.Impurities.Add(new Impurity(Imp1Formula.Text, Imp1Lower.Text.ToDouble(), Imp1Upper.Text.ToDouble(), Imp1Step.Text.ToDouble()));
             if (Imp2CB.Checked) Analysis.Impurities.Add(new Impurity(Imp2Formula.Text, Imp2Lower.Text.ToDouble(), Imp2Upper.Text.ToDouble(), Imp2Step.Text.ToDouble()));
@@ -73,14 +70,12 @@ namespace CHN_Tool
             var best = await Task.Run(() => Analysis.Solve());
             ////gets the sum formula of best composition
             var sumFormula = Analysis.Formula.SumFormula(Analysis.Impurities, best);
-
             var composition = sumFormula.ElementalAnalysis();
             ////output everything.
             outputRTB.Text = $"Analysis completed for {formulaTB.Text} with Error: {ElementalAnalysisUtil.Error(composition, Analysis.TheoreticalAnalysis)}.\nBest Values found: {String.Join(", ", best)}\n" +
                 $"Formula therefore is:\n{formulaTB.Text} x ";
             for (var i = 0; i < Analysis.Impurities.Count; i++) outputRTB.Text += $"{best[i]} {Analysis.Impurities[i].Formula} ";
             outputRTB.Text += $"\nFormula after parsing: {sumFormula}\n";
-
             //print analysis
             outputRTB.Text += $"#########################################\n";
             foreach (var (key, value) in composition)
@@ -93,7 +88,6 @@ namespace CHN_Tool
 
             //reactivate button
             Sub3Btn.Enabled = true;
-            Sub3Btn.Text = "Recalculate";
         }
 
         /// <summary>
