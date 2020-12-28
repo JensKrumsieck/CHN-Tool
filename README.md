@@ -1,4 +1,4 @@
-![Logo](https://raw.githubusercontent.com/JensKrumsieck/CHN-Tool/master/.github/chn.png)
+<img src="https://raw.githubusercontent.com/JensKrumsieck/CHN-Tool/master/.github/chn.png" width="150" alt="LOGO" />
 
 
 # CHN-Tool
