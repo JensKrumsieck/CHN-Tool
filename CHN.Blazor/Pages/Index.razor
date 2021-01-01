@@ -2,14 +2,14 @@
 @using ChemSharp.Molecules.ElementalAnalysis
 @using ChemSharp.Extensions
 @using ChemSharp.Molecules.Extensions
-@using System.Globalization
 
 <div class="chn container">
-	<EditForm EditContext="_ctx">
+	<img src="chn.svg" style="width: 48px; height: 48px;" alt="chn tool"/>
+	<EditForm EditContext="_ctx" class="my-2">
 		<p class="h4">Experimental Data</p>
 		<div class="form-group">
 			<label for="sumFormula">Sum Formula</label>
-			<LiveInputText class="form-control" id="sumFormula" @bind-Value="@_analysis.Formula" />
+			<LiveInputText class="form-control" id="sumFormula" @bind-Value="@_analysis.Formula"/>
 		</div>
 		@if (!string.IsNullOrEmpty(_analysis.Formula) && _analysis.Formula.Length > 2)
 		{
@@ -27,31 +27,31 @@
 			<div class="input-group-prepend">
 				<div class="input-group-text">C [%]</div>
 			</div>
-			<LiveInputText class="form-control" id="expC" @bind-Value="@expC" />
+			<LiveInputText class="form-control" id="expC" @bind-Value="@expC"/>
 		</div>
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
 				<div class="input-group-text">H [%]</div>
 			</div>
-			<LiveInputText class="form-control" id="expH" @bind-Value="@expH" />
+			<LiveInputText class="form-control" id="expH" @bind-Value="@expH"/>
 		</div>
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
 				<div class="input-group-text">N [%]</div>
 			</div>
-			<LiveInputText class="form-control" id="expN" @bind-Value="@expN" />
+			<LiveInputText class="form-control" id="expN" @bind-Value="@expN"/>
 		</div>
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
 				<div class="input-group-text">S [%]</div>
 			</div>
-			<LiveInputText class="form-control" id="expS" @bind-Value="@expS" />
+			<LiveInputText class="form-control" id="expS" @bind-Value="@expS"/>
 		</div>
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
 				<div class="input-group-text">F [%]</div>
 			</div>
-			<LiveInputText class="form-control" id="expF" @bind-Value="@expF" />
+			<LiveInputText class="form-control" id="expF" @bind-Value="@expF"/>
 		</div>
 		@if (_analysis.Deviation != null)
 		{
@@ -67,34 +67,34 @@
 		</p>
 		@foreach (var impurity in _analysis.Impurities)
 		{
-	<div class="input-group mb-3">
-		<div class="input-group-prepend">
-			<div class="input-group-text">Sum Formula</div>
-		</div>
-		<LiveInputText class="form-control" @bind-Value="@impurity.Formula" />
-		<button class="btn btn-outline-danger btn-sm" @onclick="@(() => _analysis.Impurities.Remove(impurity))">Remove Impurity</button>
-	</div>
+			<div class="input-group mb-3">
+				<div class="input-group-prepend">
+					<div class="input-group-text">Sum Formula</div>
+				</div>
+				<LiveInputText class="form-control" @bind-Value="@impurity.Formula"/>
+				<button class="btn btn-outline-danger btn-sm" @onclick="@(() => _analysis.Impurities.Remove(impurity))">Remove Impurity</button>
+			</div>
 			<div class="row">
 				<div class="input-group mb-3 col-4">
 					<div class="input-group-prepend">
 						<div class="input-group-text">Lower</div>
 					</div>
-					<InputNumber class="form-control" @bind-Value="@impurity.Lower" />
+					<InputNumber class="form-control" @bind-Value="@impurity.Lower"/>
 				</div>
 				<div class="input-group mb-3 col-4">
 					<div class="input-group-prepend">
 						<div class="input-group-text">Upper</div>
 					</div>
-					<InputNumber class="form-control" @bind-Value="@impurity.Upper" />
+					<InputNumber class="form-control" @bind-Value="@impurity.Upper"/>
 				</div>
 				<div class="input-group mb-3 col-4">
 					<div class="input-group-prepend">
 						<div class="input-group-text">Step</div>
 					</div>
-					<InputNumber class="form-control" @bind-Value="@impurity.Step" />
+					<InputNumber class="form-control" @bind-Value="@impurity.Step"/>
 				</div>
 			</div>
-			
+
 		}
 
 		<button class="btn btn-primary" @onclick="@(async () => await Calculate())">Calculate</button>
