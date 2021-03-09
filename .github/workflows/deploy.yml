@@ -3,10 +3,6 @@ name: Deploy on Vercel
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
-  workflow_dispatch:
-
 jobs:
   build:
     runs-on: windows-latest
@@ -21,7 +17,7 @@ jobs:
     - name: publish
       run: |
             cd CHN.Blazor
-            dotnet publish -c Release -o ../build
+            dotnet publish -c Release -o ../../build
             
   deploy:
     runs-on: windows-latest
