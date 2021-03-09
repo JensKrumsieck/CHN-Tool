@@ -19,8 +19,8 @@ jobs:
     - uses: amondnet/vercel-action@v20.0.0
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        vercel-org-id: ${{ secrets.ORG_ID}}
-        vercel-project-id: ${{ secrets.PROJECT_ID}}
+        vercel-org-id: ${{ secrets.ORGID}}
+        vercel-project-id: ${{ secrets.PROJECTID}}
         vercel-args: '--prod --confirm'
         working-directory: ./CHN.Blazor/bin/Release/net5.0/publish/wwwroot
         vercel-project-name: 'chn'
