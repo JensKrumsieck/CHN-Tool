@@ -19,7 +19,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: publish
-      run: 
+      run: |
             cd CHN.Blazor
             dotnet publish -c Release -o ../build
             
