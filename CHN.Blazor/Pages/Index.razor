@@ -127,7 +127,7 @@
 		base.OnInitialized();
 	}
 
-	private void CtxOnOnFieldChanged(object? sender, FieldChangedEventArgs e)
+	private void CtxOnOnFieldChanged(object sender, FieldChangedEventArgs e)
 	{
 		if(e.FieldIdentifier.FieldName.Contains("exp")) RegenerateExperimentalData();
 	}
