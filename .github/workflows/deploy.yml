@@ -23,4 +23,3 @@ jobs:
         vercel-project-id: ${{ secrets.PROJECTID}}
         vercel-args: '--prod --confirm'
         working-directory: ./CHN.Blazor/bin/Release/net5.0/publish/wwwroot
-        vercel-project-name: 'chn'
