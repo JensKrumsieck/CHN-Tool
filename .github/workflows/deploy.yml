@@ -1,0 +1,36 @@
+name: Deploy on Vercel
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: publish
+      run: 
+            cd CHN.Blazor
+            dotnet publish -c Release -o ../build
+            
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    steps:
+    - uses: amondnet/vercel-action@v20.0.0
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        org-id: ${{ secrets.ORG_ID}}
+        project-id: ${{ secrets.PROJECT_ID}}
+        vercel-args: '--prod'
+        working-directory: ./build
+  
