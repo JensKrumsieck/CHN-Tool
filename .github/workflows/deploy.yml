@@ -18,11 +18,6 @@ jobs:
       run: |
             cd CHN.Blazor
             dotnet publish -c Release -o ../../build
-            
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    steps:
     - uses: amondnet/vercel-action@v20.0.0
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
