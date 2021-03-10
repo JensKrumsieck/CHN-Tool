@@ -7,7 +7,7 @@
 
 Recalculates elemental analysis (CHN) with possible impurities.
 
-Click here to use: https://jenskrumsieck.github.io/chn/
+Click here to use: https://chn.jenskrumsieck.de/
 
 Uses [ChemSharp](https://github.com/JensKrumsieck/ChemSharp) by Jens Krumsieck
 
