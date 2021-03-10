@@ -18,6 +18,7 @@ jobs:
             dotnet publish -c Release
     - uses: amondnet/vercel-action@v20.0.0
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-org-id: ${{ secrets.ORGID}}
         vercel-project-id: ${{ secrets.PROJECTID}}
