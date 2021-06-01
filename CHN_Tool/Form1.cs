@@ -12,7 +12,7 @@ namespace CHN_Tool
 {
     public partial class Form1 : Form
     {
-        public Analysis Analysis = new Analysis();
+        public Analysis Analysis = new();
 
         public Form1()
         {
@@ -40,7 +40,7 @@ namespace CHN_Tool
         /// </summary>
         /// <returns></returns>
         private Dictionary<string, double> ReadExperimental() =>
-            new Dictionary<string, double>
+            new()
             {
                 ["C"] = !string.IsNullOrEmpty(CValue.Text) ? CValue.Text.ToDouble() : 0,
                 ["H"] = !string.IsNullOrEmpty(HValue.Text) ? HValue.Text.ToDouble() : 0,
@@ -72,7 +72,8 @@ namespace CHN_Tool
             var sumFormula = Analysis.Formula.SumFormula(Analysis.Impurities, best);
             var composition = sumFormula.ElementalAnalysis();
             ////output everything.
-            outputRTB.Text = $"Analysis completed for {formulaTB.Text} with Error: {ElementalAnalysisUtil.Error(composition, Analysis.TheoreticalAnalysis)}.\nBest Values found: {String.Join(", ", best)}\n" +
+            var analysis = Analysis.TheoreticalAnalysis;
+            outputRTB.Text = $"Analysis completed for {formulaTB.Text} with Error: {ElementalAnalysisUtil.Error(ref composition, ref analysis)}.\nBest Values found: {String.Join(", ", best)}\n" +
                 $"Formula therefore is:\n{formulaTB.Text} x ";
             for (var i = 0; i < Analysis.Impurities.Count; i++) outputRTB.Text += $"{best[i]} {Analysis.Impurities[i].Formula} ";
             outputRTB.Text += $"\nFormula after parsing: {sumFormula}\n";

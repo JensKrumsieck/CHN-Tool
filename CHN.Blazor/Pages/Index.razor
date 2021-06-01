@@ -106,66 +106,67 @@
 
 @code{
 
-	Analysis _analysis;
-	EditContext _ctx;
+    Analysis _analysis;
+    EditContext _ctx;
 
-	string expC;
-	string expH;
-	string expN;
-	string expS;
-	string expF;
+    string expC;
+    string expH;
+    string expN;
+    string expS;
+    string expF;
 
-	Dictionary<string,double> _experimentalData = new Dictionary<string, double>();
+    Dictionary<string,double> _experimentalData = new Dictionary<string, double>();
 
-	string output;
+    string output;
 
-	protected override void OnInitialized()
-	{
-		_analysis = new Analysis();
-		_ctx = new EditContext(_analysis);
-		_ctx.OnFieldChanged += CtxOnOnFieldChanged;
-		base.OnInitialized();
-	}
+    protected override void OnInitialized()
+    {
+        _analysis = new Analysis();
+        _ctx = new EditContext(_analysis);
+        _ctx.OnFieldChanged += CtxOnOnFieldChanged;
+        base.OnInitialized();
+    }
 
-	private void CtxOnOnFieldChanged(object sender, FieldChangedEventArgs e)
-	{
-		if(e.FieldIdentifier.FieldName.Contains("exp")) RegenerateExperimentalData();
-	}
+    private void CtxOnOnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        if(e.FieldIdentifier.FieldName.Contains("exp")) RegenerateExperimentalData();
+    }
 
-	async Task Calculate()
-	{
-		output = "";
-		var best = await _analysis.Solve();
-		var newFormula = _analysis.Formula.SumFormula(_analysis.Impurities, best);
-		var newTheory = newFormula.ElementalAnalysis();
-		var newDeviation = ElementalAnalysisUtil.Deviation(newTheory, _analysis.ExperimentalAnalysis);
-		var error = ElementalAnalysisUtil.Error(newTheory, _analysis.ExperimentalAnalysis);
-		output += $"Analysis completed for {_analysis.Formula} with Error: {error:N5}\nBest Values found: {string.Join(", ", best)}.\n";
-		output += $"New Formula is: {_analysis.Formula} x ";
-		for (var i = 0; i < _analysis.Impurities.Count; i++) output += $"{best[i]:N2} {_analysis.Impurities[i].Formula}  {(i != _analysis.Impurities.Count - 1 ? " x" : "")}";
-		output += $"(parsed: {newFormula.Parse()})\n";
-		output += "#############################\n";
-		foreach (var (key, value) in newFormula.ElementalAnalysis()) output += $"{key} [%]: {value}\n";
-		output += "#############################\n";
-		output += "Delta:\n";
-		foreach (var (key, value) in newDeviation) output += $"{key} [%]: {value}\n";
-		output += "#############################\n";
-		StateHasChanged();
-	}
+    async Task Calculate()
+    {
+        output = "";
+        var best = await _analysis.Solve();
+        var newFormula = _analysis.Formula.SumFormula(_analysis.Impurities, best);
+        var newTheory = newFormula.ElementalAnalysis();
+        var analysis = _analysis.ExperimentalAnalysis;
+        var newDeviation = ElementalAnalysisUtil.Deviation(newTheory, analysis);
+        var error = ElementalAnalysisUtil.Error(ref newTheory, ref analysis);
+        output += $"Analysis completed for {_analysis.Formula} with Error: {error:N5}\nBest Values found: {string.Join(", ", best)}.\n";
+        output += $"New Formula is: {_analysis.Formula} x ";
+        for (var i = 0; i < _analysis.Impurities.Count; i++) output += $"{best[i]:N2} {_analysis.Impurities[i].Formula}  {(i != _analysis.Impurities.Count - 1 ? " x" : "")}";
+        output += $"(parsed: {newFormula.Parse()})\n";
+        output += "#############################\n";
+        foreach (var (key, value) in newFormula.ElementalAnalysis()) output += $"{key} [%]: {value}\n";
+        output += "#############################\n";
+        output += "Delta:\n";
+        foreach (var (key, value) in newDeviation) output += $"{key} [%]: {value}\n";
+        output += "#############################\n";
+        StateHasChanged();
+    }
 
-	/// <summary>
-	/// Regenerates experimental data from fields
-	/// </summary>
-	void RegenerateExperimentalData()
-	{
-		_experimentalData = new Dictionary<string, double>
-		{
-			{"C", expC.ToDouble()},
-			{"H", expH.ToDouble()},
-			{"N", expN.ToDouble()},
-			{"S", expS.ToDouble()},
-			{"F", expF.ToDouble()},
-		};
-		_analysis.ExperimentalAnalysis = _experimentalData;
-	}
+    /// <summary>
+    /// Regenerates experimental data from fields
+    /// </summary>
+    void RegenerateExperimentalData()
+    {
+        _experimentalData = new Dictionary<string, double>
+        {
+            {"C", expC.ToDouble()},
+            {"H", expH.ToDouble()},
+            {"N", expN.ToDouble()},
+            {"S", expS.ToDouble()},
+            {"F", expF.ToDouble()},
+        };
+        _analysis.ExperimentalAnalysis = _experimentalData;
+    }
 }
