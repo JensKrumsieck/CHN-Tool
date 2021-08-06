@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ChemSharp" Version="1.0.9" />
-    <PackageReference Include="ChemSharp.Molecules" Version="1.0.9" />
+    <PackageReference Include="ChemSharp" Version="1.0.10" />
+    <PackageReference Include="ChemSharp.Molecules" Version="1.0.10" />
   </ItemGroup>
 
   <ItemGroup>
