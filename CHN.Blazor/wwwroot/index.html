@@ -4,22 +4,25 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="description" content="Recalculate Elemental Analysis with Impurities and Solvents using CHN-Tool"/>
-    <meta name="keywords" content="CHN, Elemental Analysis, Chemistry, Solvents, Impurities, Calculation, Jens Krumsieck, EA, CHNS"/>
-    <meta name="author" content="Jens Krumsieck"/>
-    <meta property="og:description" content="Recalculate Elemental Analysis with Impurities and Solvents using CHN-Tool"/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content="https://chn.jenskrumsieck.de"/>
-    <meta property="og:title" content="CHN Tool"/>
-    <meta name="url" content="https://chn.jenskrumsieck.de"/>
-    <meta name="subject" content="Chemistry"/>
-    <meta name="robots" content="index,follow"/>
-    <meta name="twitter:site" content="@jens_ation"/>
-    <meta name="twitter:creator" content="@jens_ation"/>
+    <meta name="description" content="Recalculate Elemental Analysis with Impurities and Solvents using CHN-Tool" />
+    <meta name="keywords" content="CHN, Elemental Analysis, Chemistry, Solvents, Impurities, Calculation, Jens Krumsieck, EA, CHNS" />
+    <meta name="author" content="Jens Krumsieck" />
+    <meta property="og:description" content="Recalculate Elemental Analysis with Impurities and Solvents using CHN-Tool" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://chn.jenskrumsieck.de" />
+    <meta property="og:title" content="CHN Tool" />
+    <meta name="url" content="https://chn.jenskrumsieck.de" />
+    <meta name="subject" content="Chemistry" />
+    <meta name="robots" content="index,follow" />
+    <meta name="twitter:site" content="@jens_ation" />
+    <meta name="twitter:creator" content="@jens_ation" />
+    <meta name="theme-color" content="#7BC74D"/>
     <title>CHN Tool</title>
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
+    <link href="manifest.json" rel="manifest" />
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
 </head>
 
 <body>
@@ -31,6 +34,7 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
 
 </html>
