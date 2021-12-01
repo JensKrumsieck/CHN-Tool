@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ChemSharp" Version="1.0.10" />
+    <PackageReference Include="ChemSharp" Version="1.0.11" />
     <PackageReference Include="ChemSharp.Molecules" Version="1.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.10" PrivateAssets="all" />
