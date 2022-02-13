@@ -5,7 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Resources\chn_icon.ico</ApplicationIcon>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Authors>Jens Krumsieck</Authors>
     <Company>Jens Krumsieck</Company>
     <PackageProjectUrl>https://github.com/JensKrumsieck/CHN-Tool</PackageProjectUrl>
@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ChemSharp" Version="1.0.15" />
     <PackageReference Include="ChemSharp.Molecules" Version="1.0.15" />
   </ItemGroup>
 
